@@ -56,7 +56,7 @@ test('actual MCP clients run independent-wallet scenarios, isolation and bounded
         let captured: Awaited<ReturnType<typeof owned>>; await wait(async () => { captured = await owned(home); return true; });
         const response = await pending; await checkGone(captured!);
         assert.notEqual(response.isError, true); const result = object(response.structuredContent); assert.equal(result.passed, true); assert.equal(result.cleanupComplete, true);
-        assert.equal(result.apiSource, '0000000000000000000000000000000000000000'); assert.ok(!JSON.stringify(response).includes('synthetic-active-secret-sentinel'));
+        assert.equal(result.apiSource, '84f16d82ef3851d78a5f7dcd789280601e088789'); assert.ok(!JSON.stringify(response).includes('synthetic-active-secret-sentinel'));
         await assert.rejects(access(join(budget(home), 'lease.json'))); assert.equal(await readFile(join(directory, 'active-control', 'sentinel'), 'utf8'), 'unchanged');
       } finally { await client.close(); }
       assert.equal(stderr, ''); await untouched();

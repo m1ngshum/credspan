@@ -46,7 +46,7 @@ test('workflow keeps full coverage and an always-evaluated gate; only main can s
   const text = readFileSync(new URL('../.github/workflows/ci.yml', import.meta.url), 'utf8');
   assert.doesNotMatch(text, /paths-ignore:|restore-keys:|uses: actions\/cache@/);
   assert.match(text, /runner: \[ubuntu-24\.04, ubuntu-24\.04-arm\]/);
-  assert.match(text, /ref: 0000000000000000000000000000000000000000/);
+  assert.match(text, /ref: 84f16d82ef3851d78a5f7dcd789280601e088789/);
   assert.match(text, /needs: \[changes, native, integration, mcp\]\n    if: always\(\)/);
   assert.match(text, /cancel-in-progress: \$\{\{ github.event_name == 'pull_request' \}\}/);
   assert.equal([...text.matchAll(/uses: actions\/cache\/save@/g)].length, 2);

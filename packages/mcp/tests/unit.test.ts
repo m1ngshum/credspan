@@ -127,7 +127,9 @@ test('clean service-image cache fails immediately without implicit pulls; explic
   const source = fileURLToPath(new URL('../../../../', import.meta.url));
   const images = JSON.parse(await readFile(join(source, 'ops/images.json'), 'utf8'));
   const profile = JSON.parse(await readFile(new URL('../../runtime.json', import.meta.url), 'utf8'));
-  const state = join(directory, 'state.json'), calls = join(directory, 'calls.jsonl'), peerLabel = join(directory, 'peer-label.json');
+  const state = join(directory, 'state.json'), calls = join(directory, 'calls.jsonl'), peerLabel = join(directory, 'peer-label.json'), apiLabel = join(directory, 'api-label.json');
+  const architecture = process.arch === 'x64' ? 'amd64' : process.arch;
+  await writeFile(apiLabel, JSON.stringify({ ...profile, architecture }));
   await writeFile(state, '[]'); await writeFile(calls, ''); await writeFile(peerLabel, JSON.stringify(profile.peerDependencyPatch));
   const executable = join(directory, 'docker');
   await writeFile(executable, `#!${process.execPath}
@@ -138,7 +140,8 @@ const cached=JSON.parse(fs.readFileSync(${JSON.stringify(state)},'utf8'));
 if(args[0]==='pull'&&[images.postgres,images.caddy].includes(args[1])){cached.push(args[1]);fs.writeFileSync(${JSON.stringify(state)},JSON.stringify(cached));process.exit(0);}
 if(args[0]!=='image'||args[1]!=='inspect')process.exit(8);
 const ref=args[2];if(!['credspan-api:local',images.wallet,...cached].includes(ref))process.exit(1);
-console.log(JSON.stringify({Id:'sha256:'+'a'.repeat(64),Architecture:${JSON.stringify(process.arch === 'x64' ? 'amd64' : process.arch)},Config:{Labels:ref==='credspan-api:local'?{'org.opencontainers.image.source':profile.repository,'org.opencontainers.image.revision':profile.apiSource}:{'credspan.probe.patch.sha256':profile.peerPatch,'credspan.dependencies.patch.sha256':JSON.parse(fs.readFileSync(${JSON.stringify(peerLabel)},'utf8'))}}}));
+const apiLabel=JSON.parse(fs.readFileSync(${JSON.stringify(apiLabel)},'utf8'));
+console.log(JSON.stringify({Id:'sha256:'+'a'.repeat(64),Architecture:apiLabel.architecture,Config:{Labels:ref==='credspan-api:local'?{'org.opencontainers.image.source':apiLabel.repository,'org.opencontainers.image.revision':apiLabel.apiSource}:{'credspan.probe.patch.sha256':profile.peerPatch,'credspan.dependencies.patch.sha256':JSON.parse(fs.readFileSync(${JSON.stringify(peerLabel)},'utf8'))}}}));
 `, { mode: 0o700 });
   const env = { ...minimalEnvironment(), PATH: directory + ':' + minimalEnvironment().PATH, DOCKER_HOST: 'unix:///fixture/docker.sock' };
   try {
@@ -157,6 +160,14 @@ console.log(JSON.stringify({Id:'sha256:'+'a'.repeat(64),Architecture:${JSON.stri
     for (const peerPatch of ['', 'outdated-dependency-patch']) {
       await writeFile(peerLabel, JSON.stringify(peerPatch));
       await assert.rejects(command(process.execPath, ['--input-type=module', '-e', check], { env }));
+    }
+    await writeFile(peerLabel, JSON.stringify(profile.peerDependencyPatch));
+    for (const mismatch of [{ apiSource: '0'.repeat(40) }, { repository: 'https://example.invalid/wrong-source' }, { architecture: architecture === 'arm64' ? 'amd64' : 'arm64' }]) {
+      await writeFile(apiLabel, JSON.stringify({ ...profile, architecture, ...mismatch }));
+      const before = (await readFile(calls, 'utf8')).trim().split('\n').length;
+      await assert.rejects(command(process.execPath, ['--input-type=module', '-e', check], { env }));
+      const after = (await readFile(calls, 'utf8')).trim().split('\n').slice(before).map(line => JSON.parse(line) as string[]);
+      assert.ok(after.length > 0 && after.every(args => args[0] === 'image' && args[1] === 'inspect'), 'Mismatched API provenance must fail before resource creation or pulls');
     }
   } finally { await rm(directory, { recursive: true, force: true }); }
 });

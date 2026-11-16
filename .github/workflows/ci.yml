@@ -93,7 +93,7 @@ jobs:
           persist-credentials: false
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: 0000000000000000000000000000000000000000 # clean API source snapshot; matches packages/mcp/runtime.json
+          ref: 84f16d82ef3851d78a5f7dcd789280601e088789 # clean API source snapshot; matches packages/mcp/runtime.json
           path: runtime
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
