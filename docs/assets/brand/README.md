@@ -6,7 +6,7 @@
 
 Primary headline: **Your data. Your proof. Your choice.**
 
-People should hold their own credentials and choose what to share. Open standards should let anyone verify those shared proofs without paying a platform for permission. This is a guiding principle, not a claim that all issuers are trusted, private data is public, or infrastructure is free. The current implementation is a local synthetic membership sandbox; it is not a general-purpose holder app or production service.
+People should hold their own credentials and choose what to share. Open standards should let anyone verify those shared proofs without paying a platform for permission. This is a guiding principle, not a claim that all issuers are trusted, private data is public, or infrastructure is free. The current implementation supports local and private hosted synthetic membership sandboxes; it is not a general-purpose holder app or production service.
 
 Secondary tagline: **Open credentials. Built to run.**
 
