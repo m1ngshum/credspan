@@ -1,0 +1,15 @@
+{
+  "name": "@credspan/mcp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "pnpm build && node --test dist/tests/unit.test.js dist/tests/cleanup.test.js dist/tests/cleanup-hook.test.js",
+    "start": "node dist/src/main.js",
+    "test:integration": "pnpm build && node --test --test-concurrency=1 dist/tests/cleanup.integration.test.js dist/tests/integration.test.js"
+  },
+  "dependencies": { "@modelcontextprotocol/server": "2.4.0", "zod": "4.6.7" },
+  "devDependencies": { "@modelcontextprotocol/client": "2.4.0" }
+}

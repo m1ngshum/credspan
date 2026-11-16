@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://credspan.m1ngshum.com/sitemap.xml

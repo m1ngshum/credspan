@@ -1,0 +1,23 @@
+{
+  "name": "@credspan/console",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "check": "pnpm build && node --test tests/*.test.ts",
+    "dev": "vite"
+  },
+  "dependencies": {
+    "@credspan/sdk": "workspace:*",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "vite": "8.3.8",
+    "@vitejs/plugin-react": "6.3.0",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0"
+  }
+}

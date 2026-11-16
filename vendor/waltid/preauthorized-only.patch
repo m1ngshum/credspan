@@ -1,0 +1,103 @@
+diff --git a/waltid-libraries/protocols/waltid-openid4vci/src/commonMain/kotlin/id/walt/openid4vci/metadata/oauth/AuthorizationServerMetadata.kt b/waltid-libraries/protocols/waltid-openid4vci/src/commonMain/kotlin/id/walt/openid4vci/metadata/oauth/AuthorizationServerMetadata.kt
+index 0cb1b55..1b5fa6d 100644
+--- a/waltid-libraries/protocols/waltid-openid4vci/src/commonMain/kotlin/id/walt/openid4vci/metadata/oauth/AuthorizationServerMetadata.kt
++++ b/waltid-libraries/protocols/waltid-openid4vci/src/commonMain/kotlin/id/walt/openid4vci/metadata/oauth/AuthorizationServerMetadata.kt
+@@ -51,7 +51,7 @@ data class AuthorizationServerMetadata(
+     @SerialName("scopes_supported")
+     val scopesSupported: Set<String>? = null,
+     @SerialName("response_types_supported")
+-    val responseTypesSupported: Set<String>,
++    val responseTypesSupported: Set<String>? = null,
+     @SerialName("response_modes_supported")
+     val responseModesSupported: Set<String>? = null,
+     @SerialName("grant_types_supported")
+@@ -116,11 +116,15 @@ data class AuthorizationServerMetadata(
+         // RFC 8414 §2: issuer must be a valid URL without query/fragment.
+         validateIssuerUrl(issuer)
+ 
+-        // RFC 8414 §2: response_types_supported is REQUIRED.
+-        require(responseTypesSupported.isNotEmpty()) {
+-            "Authorization server response_types_supported is required"
++        // OID4VCI 1.0 §12.2 permits omission only for a pre-authorized-code-only server.
++        require(
++            responseTypesSupported != null ||
++                grantTypesSupported == setOf("urn:ietf:params:oauth:grant-type:pre-authorized_code")
++        ) {
++            "Authorization server response_types_supported is required unless only pre-authorized code is supported"
+         }
+-        require(responseTypesSupported.none { it.isBlank() }) {
++        requireNotEmptyIfPresent("response_types_supported", responseTypesSupported)
++        require(responseTypesSupported?.none { it.isBlank() } != false) {
+             "Authorization server response_types_supported must not contain blank entries"
+         }
+ 
+@@ -320,7 +324,7 @@ internal object AuthorizationServerMetadataSerializer : KSerializer<Authorizatio
+             value.authorizationEndpoint?.let { put("authorization_endpoint", JsonPrimitive(it)) }
+             value.tokenEndpoint?.let { put("token_endpoint", JsonPrimitive(it)) }
+             value.jwksUri?.let { put("jwks_uri", JsonPrimitive(it)) }
+-            put("response_types_supported", value.responseTypesSupported.toJsonArray())
++            value.responseTypesSupported?.let { put("response_types_supported", it.toJsonArray()) }
+             value.responseModesSupported?.takeIf { it.isNotEmpty() }
+                 ?.let { put("response_modes_supported", it.toJsonArray()) }
+             value.tokenEndpointAuthMethodsSupported?.takeIf { it.isNotEmpty() }
+@@ -392,7 +396,12 @@ internal object AuthorizationServerMetadataSerializer : KSerializer<Authorizatio
+             ?: error("AuthorizationServerMetadataSerializer only supports JSON")
+         val element = jsonDecoder.decodeJsonElement().jsonObject
+         val responseTypes = element.stringSet("response_types_supported")
+-            ?: error("Authorization server response_types_supported is required")
++        if (responseTypes == null) {
++            val grants = element["grant_types_supported"] as? JsonArray
++            require(grants != null && grants.isNotEmpty() && grants.all {
++                it is JsonPrimitive && it.isString && it.content == "urn:ietf:params:oauth:grant-type:pre-authorized_code"
++            }) { "Omitted response types require explicit pre-authorized-code-only grants" }
++        }
+         val customParameters = element.filterKeys { it !in knownKeys }.takeIf { it.isNotEmpty() }
+         return AuthorizationServerMetadata(
+             issuer = element.string("issuer") ?: error("Authorization server issuer is required"),
+diff --git a/waltid-libraries/protocols/waltid-openid4vci/src/commonTest/kotlin/id/walt/openid4vci/metadata/oauth/AuthorizationServerMetadataSerializationTest.kt b/waltid-libraries/protocols/waltid-openid4vci/src/commonTest/kotlin/id/walt/openid4vci/metadata/oauth/AuthorizationServerMetadataSerializationTest.kt
+index a51f680..147bf54 100644
+--- a/waltid-libraries/protocols/waltid-openid4vci/src/commonTest/kotlin/id/walt/openid4vci/metadata/oauth/AuthorizationServerMetadataSerializationTest.kt
++++ b/waltid-libraries/protocols/waltid-openid4vci/src/commonTest/kotlin/id/walt/openid4vci/metadata/oauth/AuthorizationServerMetadataSerializationTest.kt
+@@ -19,6 +19,42 @@ class AuthorizationServerMetadataSerializationTest {
+ 
+     private val json = Json
+ 
++    @Test
++    fun `preauthorized only metadata may omit response types and round trips`() {
++        val metadata = json.decodeFromString<AuthorizationServerMetadata>(
++            """{"issuer":"https://as.example","token_endpoint":"https://as.example/token","grant_types_supported":["urn:ietf:params:oauth:grant-type:pre-authorized_code"]}"""
++        )
++        assertEquals(null, metadata.responseTypesSupported)
++        val withChallenge = metadata.copy(challengeEndpoint = "https://as.example/challenge")
++        assertEquals(withChallenge, json.decodeFromString<AuthorizationServerMetadata>(json.encodeToString(withChallenge)))
++        assertFailsWith<IllegalArgumentException> { metadata.copy(grantTypesSupported = null) }
++        assertFailsWith<IllegalArgumentException> { metadata.copy(grantTypesSupported = setOf("authorization_code")) }
++        assertFailsWith<IllegalArgumentException> { metadata.copy(responseTypesSupported = emptySet()) }
++        val encoded = json.encodeToString(metadata)
++        assertFalse("response_types_supported" in json.parseToJsonElement(encoded).jsonObject)
++        assertEquals(metadata, json.decodeFromString<AuthorizationServerMetadata>(encoded))
++    }
++
++    @Test
++    fun `omission rejects default code implicit mixed malformed grants and empty response arrays`() {
++        val prefix = "urn:ietf:params:oauth:grant-type:pre-authorized_code"
++        for (extra in listOf(
++            "",
++            "\"grant_types_supported\":[\"authorization_code\"]",
++            "\"grant_types_supported\":[\"implicit\"]",
++            "\"grant_types_supported\":[\"$prefix\",\"authorization_code\"]",
++            "\"grant_types_supported\":[\"$prefix\",null]",
++            "\"grant_types_supported\":[\"$prefix\",42]",
++            "\"grant_types_supported\":[]",
++            "\"grant_types_supported\":[\"$prefix\"],\"response_types_supported\":[]",
++        )) {
++            val suffix = if (extra.isEmpty()) "" else ",$extra"
++            assertFailsWith<IllegalArgumentException> {
++                json.decodeFromString<AuthorizationServerMetadata>("{\"issuer\":\"https://as.example\",\"token_endpoint\":\"https://as.example/token\"$suffix}")
++            }
++        }
++    }
++
+     @Test
+     fun `signed metadata is an optional standard field and round trips`() {
+         val unsigned = AuthorizationServerMetadata.fromBaseUrl("https://as.example")

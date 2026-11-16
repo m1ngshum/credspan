@@ -1,0 +1,48 @@
+diff --git a/waltid-services/waltid-wallet-api2/build.gradle.kts b/waltid-services/waltid-wallet-api2/build.gradle.kts
+index 108cfc2..9bd1b7a 100644
+--- a/waltid-services/waltid-wallet-api2/build.gradle.kts
++++ b/waltid-services/waltid-wallet-api2/build.gradle.kts
+@@ -8,6 +8,15 @@ plugins {
+ group = "id.walt"
+ 
+ dependencies {
++    // Keep the service runtime on supported, aligned upstream patch families.
++    implementation(enforcedPlatform("io.netty:netty-bom:4.2.19.Final"))
++    implementation(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.22.4"))
++    implementation("com.google.guava:guava:33.8.0-jre")
++    runtimeOnly("org.postgresql:postgresql:42.7.14")
++    runtimeOnly("io.vertx:vertx-core:4.5.35")
++    runtimeOnly("org.json:json:20260719")
++    runtimeOnly("org.mozilla:rhino:1.7.15.1")
++
+     // The server library contains route handlers, OpenAPI docs, and the WalletResolver
+     // interface. It transitively pulls in waltid-openid4vc-wallet (base library).
+     // Both the OSS service and the Enterprise service depend on this library.
+diff --git a/settings.gradle.kts b/settings.gradle.kts
+--- a/settings.gradle.kts
++++ b/settings.gradle.kts
+@@ -192,9 +192,9 @@
+     repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+ 
+     repositories {
++        mavenCentral()
+         maven("https://maven.waltid.dev/releases")
+         maven("https://maven.waltid.dev/snapshots")
+-        mavenCentral()
+         google()
+     }
+ 
+diff --git a/build-logic/src/main/kotlin/waltid.base.gradle.kts b/build-logic/src/main/kotlin/waltid.base.gradle.kts
+--- a/build-logic/src/main/kotlin/waltid.base.gradle.kts
++++ b/build-logic/src/main/kotlin/waltid.base.gradle.kts
+@@ -10,9 +10,9 @@
+ }
+ 
+ repositories {
++    mavenCentral()
+     maven("https://maven.waltid.dev/releases")
+     maven("https://maven.waltid.dev/snapshots")
+-    mavenCentral()
+     google()
+ }
+ 

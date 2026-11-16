@@ -1,0 +1,2 @@
+# Preserve reviewed unified-diff context lines, including blank context markers.
+vendor/waltid/preauthorized-only.patch -whitespace

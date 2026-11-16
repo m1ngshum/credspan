@@ -1,0 +1,91 @@
+diff --git a/waltid-libraries/web/waltid-web-data-fetching/src/jvmMain/kotlin/id/walt/webdatafetching/engines/CredspanAccess.kt b/waltid-libraries/web/waltid-web-data-fetching/src/jvmMain/kotlin/id/walt/webdatafetching/engines/CredspanAccess.kt
+new file mode 100644
+index 0000000..46ebf26
+--- /dev/null
++++ b/waltid-libraries/web/waltid-web-data-fetching/src/jvmMain/kotlin/id/walt/webdatafetching/engines/CredspanAccess.kt
+@@ -0,0 +1,36 @@
++package id.walt.webdatafetching.engines
++
++import io.ktor.client.*
++import io.ktor.client.plugins.api.*
++import io.ktor.client.plugins.logging.*
++import io.ktor.http.*
++
++internal fun installCredspanAccess(
++    config: HttpClientConfig<*>,
++    origin: String? = System.getenv("CREDSPAN_ACCESS_ORIGIN"),
++    clientId: String? = System.getenv("CF_ACCESS_CLIENT_ID"),
++    secret: String? = System.getenv("CF_ACCESS_CLIENT_SECRET"),
++) {
++    if (origin == null) {
++        require(clientId == null && secret == null) { "Access requires an explicit origin" }
++        return
++    }
++    require(origin == "https://credspan-sandbox.m1ngshum.com") { "Invalid Access origin" }
++    require(listOf(clientId, secret).all { it != null && it.isNotBlank() && it.length <= 4096 && !it.contains('\r') && !it.contains('\n') }) { "Invalid Access credentials" }
++    val access = createClientPlugin("CredspanAccess") {
++        onRequest { request, _ ->
++            request.headers.remove("CF-Access-Client-Id")
++            request.headers.remove("CF-Access-Client-Secret")
++            val target = request.url.build()
++            if (target.protocol == URLProtocol.HTTPS && target.host == "credspan-sandbox.m1ngshum.com" && target.port == 443 && target.user.isNullOrEmpty() && target.password.isNullOrEmpty()) {
++                request.headers.append("CF-Access-Client-Id", clientId!!)
++                request.headers.append("CF-Access-Client-Secret", secret!!)
++            }
++        }
++    }
++    config.apply {
++        followRedirects = false
++        install(Logging) { level = LogLevel.NONE }
++        install(access)
++    }
++}
+diff --git a/waltid-libraries/web/waltid-web-data-fetching/src/jvmMain/kotlin/id/walt/webdatafetching/engines/NativeEngine.jvm.kt b/waltid-libraries/web/waltid-web-data-fetching/src/jvmMain/kotlin/id/walt/webdatafetching/engines/NativeEngine.jvm.kt
+index a56c234..4e8a1ad 100644
+--- a/waltid-libraries/web/waltid-web-data-fetching/src/jvmMain/kotlin/id/walt/webdatafetching/engines/NativeEngine.jvm.kt
++++ b/waltid-libraries/web/waltid-web-data-fetching/src/jvmMain/kotlin/id/walt/webdatafetching/engines/NativeEngine.jvm.kt
+@@ -6,5 +6,5 @@ import io.ktor.client.engine.okhttp.*
+ actual object NativeEngine : WebDataFetcherHttpEngine {
+     // OkHttp, not the Java client: the private-network guard installs its Dns here, and OkHttp connects
+     // to the addresses that Dns returns.
+-    actual override fun getHttpClient(block: HttpClientConfig<*>.() -> Unit): HttpClient = HttpClient(OkHttp, block)
++    actual override fun getHttpClient(block: HttpClientConfig<*>.() -> Unit): HttpClient = HttpClient(OkHttp) { block(); installCredspanAccess(this) }
+ }
+diff --git a/waltid-libraries/web/waltid-web-data-fetching/src/jvmTest/kotlin/id/walt/webdatafetching/engines/CredspanAccessTest.kt b/waltid-libraries/web/waltid-web-data-fetching/src/jvmTest/kotlin/id/walt/webdatafetching/engines/CredspanAccessTest.kt
+new file mode 100644
+index 0000000..5e1fd97
+--- /dev/null
++++ b/waltid-libraries/web/waltid-web-data-fetching/src/jvmTest/kotlin/id/walt/webdatafetching/engines/CredspanAccessTest.kt
+@@ -0,0 +1,32 @@
++package id.walt.webdatafetching.engines
++
++import io.ktor.client.*
++import io.ktor.client.engine.mock.*
++import io.ktor.client.request.*
++import io.ktor.http.*
++import kotlinx.coroutines.test.runTest
++import kotlin.test.*
++
++class CredspanAccessTest {
++    @Test
++    fun `service credentials stay on the exact HTTPS origin and redirects are not followed`() = runTest {
++        val sent = mutableListOf<HttpRequestData>()
++        val engine = MockEngine { request ->
++            sent.add(request)
++            respond("", HttpStatusCode.Found, headersOf(HttpHeaders.Location, "https://elsewhere.test/redirect"))
++        }
++        val client = HttpClient(engine) { installCredspanAccess(this, "https://credspan-sandbox.m1ngshum.com", "synthetic-id", "synthetic-secret") }
++        try {
++            val urls = listOf("https://credspan-sandbox.m1ngshum.com/issuer/x", "https://credspan-sandbox.m1ngshum.com:444/x", "http://credspan-sandbox.m1ngshum.com/x", "https://credspan-sandbox.m1ngshum.com.evil.test/x", "https://elsewhere.test/x")
++            for (url in urls) client.get(url)
++            assertEquals(urls.size, sent.size)
++            assertEquals("synthetic-id", sent[0].headers["CF-Access-Client-Id"])
++            assertEquals("synthetic-secret", sent[0].headers["CF-Access-Client-Secret"])
++            for (request in sent.drop(1)) { assertNull(request.headers["CF-Access-Client-Id"]); assertNull(request.headers["CF-Access-Client-Secret"]) }
++            installCredspanAccess(HttpClientConfig<MockEngineConfig>(), null, null, null)
++            assertFailsWith<IllegalArgumentException> { installCredspanAccess(HttpClientConfig<MockEngineConfig>(), null, "id", "secret") }
++            assertFailsWith<IllegalArgumentException> { installCredspanAccess(HttpClientConfig<MockEngineConfig>(), "https://evil.test", "id", "secret") }
++            assertFailsWith<IllegalArgumentException> { installCredspanAccess(HttpClientConfig<MockEngineConfig>(), "https://credspan-sandbox.m1ngshum.com", "id", "bad\nsecret") }
++        } finally { client.close() }
++    }
++}

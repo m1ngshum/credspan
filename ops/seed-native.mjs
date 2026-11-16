@@ -1,0 +1,13 @@
+import { realpath, readFile, mkdir, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+const architecture = process.arch === 'arm64' ? 'arm64' : process.arch === 'x64' ? 'amd64' : undefined;
+if (!architecture) throw Error('Unqualified native architecture');
+const pkg = await realpath('apps/api/node_modules/@openwallet-foundation/askar-nodejs');
+const metadata = JSON.parse(await readFile(pkg + '/package.json'));
+const lock = JSON.parse(await readFile('ops/native-lock.json'));
+const archive = `/opt/credspan-native/linux-${architecture}/archive.tar.gz`;
+if (lock.version !== metadata.binary.version || createHash('sha256').update(await readFile(archive)).digest('hex') !== lock[`linux-${architecture}`].sha256) throw Error('Native artifact mismatch');
+await mkdir(pkg + '/native', { recursive: true });
+execFileSync('tar', ['-xzf', archive, '--strip-components=1', '-C', pkg + '/native']);
+await writeFile(pkg + '/native/version.json', JSON.stringify({ version: lock.version }));

@@ -1,0 +1,5 @@
+{
+  "version": "v0.5.0",
+  "linux-arm64": { "asset": "library-linux-aarch64.tar.gz", "sha256": "0f5bb24d397b7c329523059d7243f6d0dbcdf419c2a40b4164ce4607ad45dbf5" },
+  "linux-amd64": { "asset": "library-linux-x86_64.tar.gz", "sha256": "dc243dbfce814905810532885b21945fd62ed5ae3fb006f38c3ecd7c698a2adb" }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "credspan",
+  "version": "0.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@12.18.0",
+  "engines": {
+    "node": "26.13.1",
+    "pnpm": "12.18.0"
+  },
+  "scripts": {
+    "check": "node --test scripts/check-foundation.test.mjs vendor/waltid/build-command.test.mjs vendor/waltid/build-peer.test.mjs scripts/ci-plan.test.mjs scripts/check-decoder-patches.test.mjs && node scripts/check-foundation.mjs && pnpm check:generated && pnpm -r check",
+    "test:integration": "pnpm --filter @credspan/sdk build && pnpm --filter @credspan/api test:integration",
+    "test:storage": "pnpm --filter @credspan/sdk build && pnpm --filter @credspan/api test:storage",
+    "generate": "pnpm --filter @credspan/sdk build && pnpm --filter @credspan/api export:openapi && node scripts/check-openapi-input.mjs && pnpm --filter @credspan/sdk generate && pnpm --filter @credspan/sdk build",
+    "check:generated": "node scripts/check-generated.mjs",
+    "test:browser": "pnpm --filter @credspan/sdk build && pnpm --filter @credspan/console build && pnpm --filter @credspan/api test:browser",
+    "doctor": "node scripts/doctor.mjs",
+    "example": "pnpm --filter @credspan/sdk build && node examples/membership.mjs",
+    "test:operations": "node --test ops/backup.test.mjs ops/local.test.mjs ops/artifacts.test.mjs && node --test ops/postgres.test.mjs && node --test ops/deployment.test.mjs",
+    "test:mcp": "pnpm --filter @credspan/mcp test:integration"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "@types/node": "26.6.6"
+  }
+}

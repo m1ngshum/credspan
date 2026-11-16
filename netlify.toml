@@ -1,0 +1,6 @@
+[build]
+  command = "node apps/site/build.mjs"
+  publish = "apps/site/dist"
+
+[build.environment]
+  NODE_VERSION = "26.13.1"

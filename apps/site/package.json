@@ -1,0 +1,11 @@
+{
+  "name": "@credspan/site",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node build.mjs && node --test tests/*.test.mjs"
+  }
+}

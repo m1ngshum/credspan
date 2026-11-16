@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#182A32">
+  <meta name="description" content="Credspan is building open credential infrastructure around ownership and voluntary sharing. Explore the project and its local synthetic sandbox.">
+  <meta name="referrer" content="no-referrer">
+  <meta property="og:title" content="Credspan — Your data. Your proof. Your choice.">
+  <meta property="og:description" content="Open credentials. Built to run. A project exploring credentials people hold and choose to share.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://credspan.m1ngshum.com/">
+  <meta property="og:image" content="https://credspan.m1ngshum.com/assets/banner.png">
+  <meta property="og:image:alt" content="Credspan — Open credentials. Built to run.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://credspan.m1ngshum.com/">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/style.css">
+  <title>Credspan — Your data. Your proof. Your choice.</title>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header wrap">
+    <a class="brand" href="/" aria-label="Credspan home"><img src="/assets/lockup.svg" width="216" height="56" alt="Credspan"></a>
+    <nav aria-label="Main navigation"><a href="#idea">The idea</a><a href="#sandbox">The sandbox</a><a href="#project">The project</a></nav>
+  </header>
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <h1 id="hero-title">Your data.<br>Your proof.<br><span>Your choice.</span></h1>
+        <p>Credentials you hold. Proofs you choose to share. Open standards that let them travel.</p>
+        <a class="button" href="#idea">Explore Credspan</a>
+        <a class="quiet-link" href="#sandbox">See the local sandbox</a>
+      </div>
+      <div class="hero-art" aria-hidden="true"><img src="/assets/logo.svg" width="480" height="480" alt=""><span class="art-caption">Open credentials. Built to run.</span></div>
+    </section>
+    <section class="idea section" id="idea" aria-labelledby="idea-title">
+      <div class="wrap idea-layout"><div><h2 id="idea-title">A credential should<br>travel with you.</h2><p class="lead">Share a proof, not ownership of your data.</p></div>
+        <div class="principles">
+          <article><h3>Hold it yourself</h3><p>Credentials belong in a wallet you control, ready when you need them.</p></article>
+          <article><h3>Choose what to share</h3><p>Present a proof for a specific request. Sharing should be a decision, not a default.</p></article>
+          <article><h3>Verify through open standards</h3><p>The aim is verification without paying a platform for permission. Issuer trust still matters.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="sandbox section wrap" id="sandbox" aria-labelledby="sandbox-title">
+      <div class="section-heading"><h2 id="sandbox-title">From an idea<br>to a working loop.</h2><p>The local sandbox issues synthetic memberships, accepts presentations from a configured wallet peer, and checks signed status and revocation.</p></div>
+      <figure><img src="/assets/console.png" width="1440" height="1070" loading="lazy" decoding="async" alt="Credspan local console showing issue, verify and revoke workflows, disconnected and using synthetic data."><figcaption>The actual local console. This is a screenshot, not a hosted credential service.</figcaption></figure>
+      <div class="flow" aria-label="Credential journey"><div><h3>Issue</h3><p>Create a synthetic membership offer.</p></div><div><h3>Present</h3><p>Respond through the independent wallet peer.</p></div><div><h3>Check</h3><p>Verify the proof and its current status.</p></div></div>
+    </section>
+    <section class="project section" id="project" aria-labelledby="project-title"><div class="wrap project-layout">
+      <div><h2 id="project-title">Built in the open<br>standards tradition.</h2><p class="lead">Ownership is the principle.<br>Interoperability is the work.</p><a class="text-link" href="https://m1ngshum.com/">Meet the builder</a></div>
+      <div class="project-note"><h3>Where the project stands</h3><p>Credspan is under development. The current delivery is a local synthetic membership sandbox with a modified walt.id wallet peer.</p><p>General wallet compatibility, ecosystem conformance and production deployment remain future work. The repository is currently private.</p><p>This public site introduces the project. It does not collect credentials or connect to the local API.</p></div>
+    </div></section>
+  </main>
+  <footer class="wrap site-footer"><a href="/" aria-label="Credspan home"><img src="/assets/lockup.svg" width="168" height="44" alt="Credspan"></a><p>Open credentials. Built to run.</p><a href="https://m1ngshum.com/">A project by Ming Shum</a></footer>
+</body>
+</html>

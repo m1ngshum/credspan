@@ -1,0 +1,24 @@
+node_modules/
+.pnpm-store/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+
+ops/.cache/
+ops/local-state/
+
+.netlify/
+
+# Private operator and recovery material belongs outside the repository.
+*.env
+*.pem
+*.key
+*.p12
+*.pfx
+*.enc
+ops/private/
+ops/evidence/
