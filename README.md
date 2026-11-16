@@ -8,7 +8,7 @@ People should hold their own credentials and choose what to share. Open standard
 
 *Open credentials. Built to run.*
 
-![Credspan banner](docs/assets/brand/banner.png)
+![Credspan — Open credentials. Built to run.](docs/assets/brand/banner.png)
 
 Credspan is an open-source credential platform under development. The current delivery supports local development and a [private, single-owner hosted sandbox](docs/hosted-sandbox.md) using synthetic data only. It is not a general-purpose holder app or production service. The current compatibility slice runs a real NestJS/Express API, Credo and native Askar backed by PostgreSQL. Its **synthetic membership** lane demonstrates OID4VCI 1.0 issuance to a separately implemented wallet and OID4VP 1.0 DCQL presentation verification. It uses an explicitly [modified walt.id Wallet API v2 1.2.1 peer](vendor/waltid/README.md); unmodified-wallet interoperability is not claimed.
 

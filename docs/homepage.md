@@ -29,8 +29,8 @@ Set `NETLIFY_SITE_ID` privately to the intended project ID; do not paste it into
 
 ```sh
 node apps/site/build.mjs
-netlify deploy --filter @credspan/site --site "$NETLIFY_SITE_ID" --dir apps/site/dist --no-build
-netlify deploy --filter @credspan/site --site "$NETLIFY_SITE_ID" --dir apps/site/dist --no-build --prod
+netlify deploy --filter @credspan/site --site "${NETLIFY_SITE_ID:?Set the intended project ID}" --dir apps/site/dist --no-build
+netlify deploy --filter @credspan/site --site "${NETLIFY_SITE_ID:?Set the intended project ID}" --dir apps/site/dist --no-build --prod
 ```
 
 The final command publishes publicly. Do not deploy the repository root or `apps/console/dist`, add API rewrites, or change site-wide access controls on unrelated projects. `.netlify` local state is ignored. For subsequent changes, repeat the exact-source review and preview checks before publishing; a failed deploy leaves the prior successful version live.

@@ -1,6 +1,6 @@
 # Roadmap
 
-The initial seven pull requests are delivered and merged for the bounded local/sandbox scope below. This is not production acceptance or a claim that the later roadmap is complete. Each change used builder implementation and reviewer validation tied to exact base/head SHAs.
+The initial seven implementation slices are delivered for the bounded local/sandbox scope below. This repository starts from a reviewed source snapshot; its pull request numbers do not describe that earlier development history. This is not production acceptance or a claim that the later roadmap is complete. Each change used builder implementation and reviewer validation tied to exact base/head SHAs.
 
 For future dependent changes, use stacked, linked PRs in dependency order. User-authorized merges proceed through the coordinator after required hosted CI and exact-base/head review pass; rebase each successor only onto the verified preceding merged main SHA. Keep the repository private unless the user explicitly authorizes publication. Any edit, retarget, or rebase invalidates the verdict and requires fresh validation/review before merge. Every step needs concrete acceptance evidence.
 
@@ -14,7 +14,7 @@ For future dependent changes, use stacked, linked PRs in dependency order. User-
 
 ## Later, separately scoped
 
-Production MCP requires a separate security and operational review. The bounded loopback Compose helper belongs to step 6. A public/cloud deployment helper remains future work, with explicit target selection, previewable changes, credential isolation, rollback, and production acceptance criteria. Production MCP and public/cloud deployment are outside the initial seven PRs. No production deployment is authorized by this roadmap alone.
+Production MCP requires a separate security and operational review. The bounded loopback Compose helper belongs to step 6. A public/cloud deployment helper remains future work, with explicit target selection, previewable changes, credential isolation, rollback, and production acceptance criteria. Production MCP and public/cloud deployment are outside the initial seven slices. No production deployment is authorized by this roadmap alone.
 
 Future milestones, separately scoped and unimplemented:
 
