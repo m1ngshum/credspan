@@ -184,7 +184,7 @@ importers:
     dependencies:
       '@credo-ts/askar':
         specifier: 0.7.4
-        version: 0.7.4(@openwallet-foundation/askar-shared@0.6.1)(typescript@6.0.3)
+        version: 0.7.4(@openwallet-foundation/askar-shared@0.7.0)(typescript@6.0.3)
       '@credo-ts/core':
         specifier: 0.7.4
         version: 0.7.4(typescript@6.0.3)
@@ -213,8 +213,8 @@ importers:
         specifier: 0.6.1
         version: 0.6.1
       '@openwallet-foundation/askar-shared':
-        specifier: 0.6.1
-        version: 0.6.1
+        specifier: 0.7.0
+        version: 0.7.0
       express:
         specifier: 5.3.0
         version: 5.3.0
@@ -271,6 +271,8 @@ importers:
       vite:
         specifier: 8.3.8
         version: 8.3.8(@types/node@26.6.6)(jiti@2.7.0)
+
+  apps/site: {}
 
   packages/mcp:
     dependencies:
@@ -579,6 +581,9 @@ packages:
 
   '@openwallet-foundation/askar-shared@0.6.1':
     resolution: {integrity: sha512-xjFYyK5Zk/uTFKfTn2BnnldmBLGWBkVfPhOoXQl122YcRVPN7BadAvFUi6Ad+zu7Nk3axj416+fvXtUUQm1Vig==}
+
+  '@openwallet-foundation/askar-shared@0.7.0':
+    resolution: {integrity: sha512-+LOynK372ETeqwpsPb4idHVQekG26nBCkKR44Q8ycoQn4bwBPVyi7jWMHOcFBudIh3yEDJmdjoTR2hbb1tlIqQ==}
 
   '@owf/cose@0.4.2':
     resolution: {integrity: sha512-ISjH/NFxgI2p0jiCY462JdL5m2bHg850iehvYj8sL9dHra06sJy0RTO1dwx78xqpCkFc/4h9Oo8XXLQD1eyLMg==}
@@ -2057,11 +2062,11 @@ snapshots:
   '@cbor-extract/cbor-extract-win32-x64@2.2.3':
     optional: true
 
-  '@credo-ts/askar@0.7.4(@openwallet-foundation/askar-shared@0.6.1)(typescript@6.0.3)':
+  '@credo-ts/askar@0.7.4(@openwallet-foundation/askar-shared@0.7.0)(typescript@6.0.3)':
     dependencies:
       '@credo-ts/core': 0.7.4(typescript@6.0.3)
       '@noble/curves': 2.4.0
-      '@openwallet-foundation/askar-shared': 0.6.1
+      '@openwallet-foundation/askar-shared': 0.7.0
       '@panva/hpke-noble': 1.1.8(hpke@1.1.8)
       class-transformer: 0.5.1
       class-validator: 0.14.4
@@ -2428,6 +2433,11 @@ snapshots:
       koffi: 2.16.3
 
   '@openwallet-foundation/askar-shared@0.6.1':
+    dependencies:
+      buffer: 6.0.3
+      tar: 7.5.22
+
+  '@openwallet-foundation/askar-shared@0.7.0':
     dependencies:
       buffer: 6.0.3
       tar: 7.5.22
