@@ -24,7 +24,7 @@
     "express": "5.3.0",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2",
-    "@openwallet-foundation/askar-nodejs": "0.6.1",
+    "@openwallet-foundation/askar-nodejs": "0.7.0",
     "@openwallet-foundation/askar-shared": "0.6.1",
     "@openid4vc/oauth2": "0.6.0",
     "@nestjs/swagger": "12.1.1"
