@@ -27,7 +27,7 @@
     "@openwallet-foundation/askar-nodejs": "0.6.1",
     "@openwallet-foundation/askar-shared": "0.6.1",
     "@openid4vc/oauth2": "0.6.0",
-    "@nestjs/swagger": "12.1.1"
+    "@nestjs/swagger": "12.1.2"
   },
   "devDependencies": {
     "@types/express": "5.0.6",
