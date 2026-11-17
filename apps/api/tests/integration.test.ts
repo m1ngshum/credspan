@@ -373,6 +373,8 @@ test('real modified-wallet roundtrip and durable single-attempt verifier', { tim
 
       const expired = await agent.sdJwtVc.sign({ payload: { ...profile, name: 'Synthetic', exp: Math.floor(Date.now() / 1000) - 120 }, holder: { method: 'jwk', jwk: holder }, issuer: { method: 'did', didUrl: issuerKid } });
       for (const [label, payload, disclosureFrame] of [
+        ['wrong credential type', { ...profile, vct: 'urn:example:other-membership' }, undefined],
+        ['alias does not widen local credential type policy', { ...profile, vct: 'urn:example:other-membership', aka_vcts: [profile.vct] }, undefined],
         ['missing required status', { ...profile, status: undefined }, undefined],
         ['unapproved status URI', { ...profile, status: { status_list: { idx: index, uri: 'http://127.0.0.1:1/forbidden' } } }, undefined],
         ['selectively disclosed status', profile, { _sd: ['status'] }],
@@ -387,6 +389,7 @@ test('real modified-wallet roundtrip and durable single-attempt verifier', { tim
           await attempt(label, [`${input}.${Buffer.from(signature.signature).toString('base64url')}`, ...parts.slice(1), hidden], false);
         } else {
           const invalid = await agent.sdJwtVc.sign({ payload: { ...payload, name: 'Synthetic' }, holder: { method: 'jwk', jwk: holder }, issuer: { method: 'did', didUrl: issuerKid } });
+          assert.deepEqual(decodeJwt(invalid.compact.split('~')[0]).aka_vcts, 'aka_vcts' in payload ? payload.aka_vcts : undefined);
           await attempt(label, invalid.compact.split('~').filter(Boolean), false);
         }
       }
