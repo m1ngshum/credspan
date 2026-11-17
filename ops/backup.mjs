@@ -56,3 +56,19 @@ export async function encryptProcessBackup(child, key, destination) {
     throw Error('Database export failed; incomplete backup removed');
   }
 }
+
+export async function restoreProcessBackup(child, input) {
+  const closed = new Promise(resolve => child.once('close', resolve));
+  const completed = new Promise((resolve, reject) => {
+    child.once('error', reject);
+    child.once('close', code => code === 0 ? resolve() : reject(Error('Database restore failed')));
+  });
+  const piped = pipeline(input, child.stdin);
+  try { await Promise.all([piped, completed]); }
+  catch {
+    input.destroy(); child.stdin.destroy(); child.kill('SIGTERM');
+    const timer = setTimeout(() => child.kill('SIGKILL'), 1000); timer.unref();
+    try { await Promise.allSettled([piped, completed, closed]); } finally { clearTimeout(timer); }
+    throw Error('Database restore failed; inspect the fenced target before retrying');
+  }
+}

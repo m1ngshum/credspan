@@ -1,6 +1,17 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+test('invalid backup key fails before Docker is launched', async () => {
+  const { backup } = await import('./local.mjs');
+  const { mkdtemp, mkdir, writeFile, rm } = await import('node:fs/promises');
+  const { tmpdir, userInfo } = await import('node:os'); const { join } = await import('node:path');
+  const directory = await mkdtemp(join(tmpdir(), 'credspan-backup-key-'));
+  try {
+    await mkdir(join(directory, 'secrets'));
+    await writeFile(join(directory, 'secrets', 'backup_key'), 'invalid', { mode: 0o600 });
+    await assert.rejects(backup({ directory, uid: userInfo().uid }, join(directory, 'archive')), /Invalid backup key/);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
 test('remote Docker overrides fail before any daemon request or apply', () => {
   for (const endpoint of ['tcp://example.invalid:2376', 'ssh://example.invalid']) {
     assert.throws(() => execFileSync(process.execPath, ['--input-type=module', '-e', "import {dockerBoundary} from './ops/local.mjs';dockerBoundary()"], { cwd: new URL('..', import.meta.url), env: { ...process.env, DOCKER_HOST: endpoint }, stdio: ['ignore', 'pipe', 'pipe'] }));
