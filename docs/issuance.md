@@ -1,6 +1,6 @@
 # Membership issuance API
 
-This is a real authenticated issuer surface in the local sandbox. It remains a single configured administrator and active issuer, with the modified-wallet compatibility limits documented separately. The [console, OpenAPI and generated SDK](developer-experience.md) use these endpoints.
+This is a real authenticated issuer surface in the local and private hosted synthetic sandboxes. It remains a single configured administrator and active issuer, with the modified-wallet compatibility limits documented separately. The [console, OpenAPI and generated SDK](developer-experience.md) use these endpoints.
 
 `POST /api/issuance-sessions` requires `Authorization: Bearer <management-key>` and exactly:
 

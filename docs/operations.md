@@ -4,7 +4,7 @@ This deployment is an isolated synthetic sandbox on one Docker host. It serves l
 
 ## Build, check and explicitly apply
 
-Use the pinned Node/pnpm toolchain, the digest-pinned glibc distroless runtime (with the separate Node builder), a local Unix Docker endpoint and the [reviewed modified wallet peer](../vendor/waltid/README.md). Remote SSH/TCP Docker contexts are rejected. The helper pins the effective local endpoint rather than following later context changes. Successful hosted GitHub Actions checks remain a merge gate. Main branch protection requires the strict `ci` check, resolved conversations and linear history, including administrators. The repository remains private; coordinator merges require user authorization, required CI and exact-base/head review.
+Use the pinned Node/pnpm toolchain, the digest-pinned glibc distroless runtime (with the separate Node builder), a local Unix Docker endpoint and the [reviewed modified wallet peer](../vendor/waltid/README.md). Remote SSH/TCP Docker contexts are rejected. The helper pins the effective local endpoint rather than following later context changes. Successful hosted GitHub Actions checks remain a merge gate. Main branch protection requires the strict `ci` check, resolved conversations and linear history, including administrators. The source repository is public; private operator records and hosted access remain restricted. Coordinator merges require user authorization, required CI and exact-base/head review.
 
 ```sh
 pnpm install --frozen-lockfile
