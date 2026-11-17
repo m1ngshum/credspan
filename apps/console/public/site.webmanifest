@@ -22,7 +22,7 @@
   "background_color": "#007F79",
   "display": "standalone",
   "short_name": "Credspan",
-  "description": "Local synthetic credential sandbox",
+  "description": "Synthetic credential sandbox",
   "start_url": ".",
   "scope": "."
 }
