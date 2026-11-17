@@ -5,7 +5,38 @@ import { Readable } from 'node:stream';
 import { mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { encryptBackup, withVerifiedBackup } from './backup.mjs';
+import { encryptBackup, withVerifiedBackup, restoreProcessBackup } from './backup.mjs';
+
+test('restore waits for child success and retires children after input or process failure', { timeout: 15000 }, async () => {
+  const { spawn } = await import('node:child_process');
+  const { PassThrough } = await import('node:stream');
+  const { once } = await import('node:events');
+  const launch = script => spawn(process.execPath, ['-e', script], { stdio: ['pipe', 'pipe', 'ignore'] });
+  const success = launch("process.stdin.resume();process.stdin.on('end',()=>setTimeout(()=>process.exit(0),50))");
+  await restoreProcessBackup(success, Readable.from('archive'));
+  assert.equal(success.exitCode, 0);
+  const nonzero = launch("process.stdin.resume();process.stdin.on('end',()=>process.exit(7))");
+  await assert.rejects(restoreProcessBackup(nonzero, Readable.from('archive')), /Database restore failed/);
+  assert.equal(nonzero.exitCode, 7);
+  const missing = spawn('/nonexistent-credspan-restore-command', [], { stdio: ['pipe', 'ignore', 'ignore'] });
+  let spawnClosed = false; missing.once('close', () => { spawnClosed = true; });
+  await assert.rejects(restoreProcessBackup(missing, Readable.from('archive')), /Database restore failed/);
+  assert.equal(spawnClosed, true);
+  for (const failure of ['source', 'stdin']) {
+    const child = launch("process.on('SIGTERM',()=>{});process.stdout.write('ready');setInterval(()=>{},1000)");
+    try {
+      await once(child.stdout, 'data'); child.stdout.destroy();
+      const input = new PassThrough();
+      let closed = false; child.once('close', () => { closed = true; });
+      const restored = restoreProcessBackup(child, input);
+      if (failure === 'source') input.destroy(Error('synthetic input failure'));
+      else child.stdin.destroy(Error('synthetic stdin failure'));
+      await assert.rejects(restored, /Database restore failed/);
+      assert.equal(closed, true); assert.equal(child.signalCode, 'SIGKILL');
+      assert.equal(input.destroyed, true); assert.equal(child.stdin.destroyed, true);
+    } finally { child.kill('SIGKILL'); }
+  }
+});
 test('backup is fully authenticated before restore callback and rejects wrong key or tamper', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'credspan-backup-test-')), key = randomBytes(32), original = randomBytes(100000);
   const path = join(directory, 'archive.enc'); let restorations = 0;

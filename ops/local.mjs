@@ -5,7 +5,7 @@ import { createReadStream } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { userInfo } from 'node:os';
 import { pathToFileURL } from 'node:url';
-import { encryptProcessBackup, withVerifiedBackup } from './backup.mjs';
+import { encryptProcessBackup, restoreProcessBackup, withVerifiedBackup } from './backup.mjs';
 const images = JSON.parse(await readFile(new URL('./images.json', import.meta.url)));
 let localEndpoint;
 export function dockerBoundary() {
@@ -313,10 +313,11 @@ export async function rotate(project, operation, keyFile) {
   });
 }
 export async function backup(project, destination) {
+  const key = await backupKey(project, join(project.directory, 'secrets', 'backup_key'));
   const args = ['compose', '--project-name', project.name, '--file', join(project.directory, 'compose.yaml'), 'exec', '-T', '--user', 'root', '-e', 'PGPASSFILE=/run/secrets/owner_pgpass', 'postgres', 'pg_dump', '-Fc', '-h', 'localhost', '-U', 'credspan_owner', project.storeId];
   const boundary = dockerBoundary();
   const child = spawn('docker', [...boundary.prefix, ...args], { env: boundary.env, stdio: ['ignore', 'pipe', 'ignore'] });
-  await encryptProcessBackup(child, Buffer.from(await secret(project, 'backup_key'), 'hex'), destination);
+  await encryptProcessBackup(child, key, destination);
 }
 async function backupKey(project, keyFile) {
   const info = await lstat(keyFile);
@@ -330,7 +331,7 @@ async function restoreVerified(project, verified) {
   psql(project, `CREATE DATABASE "${project.storeId}" OWNER credspan_owner;`);
   const boundary = dockerBoundary();
   const child = spawn('docker', [...boundary.prefix, 'compose', '--project-name', project.name, '--file', join(project.directory, 'compose.yaml'), 'exec', '-T', '--user', 'root', '-e', 'PGPASSFILE=/run/secrets/owner_pgpass', 'postgres', 'pg_restore', '--exit-on-error', '--no-owner', '--no-acl', '-h', 'localhost', '-U', 'credspan_owner', '-d', project.storeId], { env: boundary.env, stdio: ['pipe', 'ignore', 'ignore'] });
-  await new Promise((resolve, reject) => { child.on('error', reject); child.on('close', code => code === 0 ? resolve() : reject(Error('Database restore failed'))); child.stdin.on('error', reject); createReadStream(verified).on('error', reject).pipe(child.stdin); });
+  await restoreProcessBackup(child, createReadStream(verified));
   await grants(project);
 }
 export async function restore(project, source, keyFile) {
