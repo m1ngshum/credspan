@@ -21,7 +21,17 @@ Omitting `TRUSTED_ISSUER_DIDS` trusts this store's explicitly persisted local is
 
 The status URI is resolved internally to a newly signed local snapshot through Credo's installed `agentDependencies.fetch` API. Other URIs are rejected without network access, so redirects cannot be followed. Generation is bounded to two seconds and the returned token to 16 KiB. Status JWTs must use `statuslist+jwt`, EdDSA, the exact local absolute/relative signing key reference and issuer, the exact subject URI, one-bit entries, integer issuance/expiry, and a 30-second TTL/lifetime with no future issuance or stale tokens. Credo still verifies the status JWT signature and status bit; parsing or a direct database revocation lookup is not a substitute. An additional durable revocation check denies credentials even if a concurrent snapshot predates revocation. Internal verification does not cache status. Timeout does not cancel native storage work already in progress.
 
-The wire format follows the implemented JWT Token Status List profile using installed Credo 0.7.4, `@owf/token-status-list` 0.4.2 and `@sd-jwt/sd-jwt-vc` 0.21.1. [TSL draft-21](https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/) remains an Internet-Draft in the RFC Editor queue as checked on 2026-11-12; [SD-JWT VC draft-26](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/) is also an Internet-Draft. The tested library behavior does not establish complete latest-draft conformance.
+The implemented wire behavior is pinned by Credo 0.7.4, `@owf/token-status-list` 0.4.2 and `@sd-jwt/sd-jwt-vc` 0.21.1, the local policy above and the real integration tests. Library versions alone do not identify a completely implemented specification edition. The supported subset uses [OpenID4VCI 1.0 Final](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) preauthorized issuance and [OpenID4VP 1.0 Final](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html) DCQL/encrypted responses. Offers and presentation requests explicitly select `v1`; the verifier rejects non-`v1` sessions and the issuer accepts only the documented request shape.
+
+References checked on **2026-11-17**:
+
+| Reference | Published/current edition and supported boundary |
+| --- | --- |
+| SD-JWT | [RFC 9901](https://www.rfc-editor.org/rfc/rfc9901.html), a published standard; issuer signature, disclosure processing and required key binding are exercised for this lane. |
+| SD-JWT VC | [Draft 27](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-27.html), dated 2026-11-16, remains an Internet-Draft. The previous dated inventory referred to draft 26; it did not establish complete draft-26 conformance. |
+| JWT Token Status List | [Draft 21](https://www.ietf.org/archive/id/draft-ietf-oauth-status-list-21.html), still an Internet-Draft in the RFC Editor queue. Only the documented signed JWT/one-bit local status policy is qualified. |
+
+SD-JWT VC draft 27 §§2.2.2.2, 5.4 and 7.7 clarify issuer-asserted types (`vct`/`aka_vcts`), metadata inheritance and issuer authorization. This local profile still requires the exact signed `vct` `urn:credspan:sandbox-membership`; an alias in `aka_vcts` or a Type Metadata `extends` relationship does not widen that acceptance policy or establish issuer trust. No Type Metadata fetching or general alias matching is implemented or qualified. Signed HTTP tests preserve valid exact-type acceptance and reject a different `vct`, including one carrying the expected type only as an alias. No runtime migration is needed for this clarification, and no complete draft-27 or HAIP conformance or certification is claimed.
 
 ## Durable concurrency and limits
 
