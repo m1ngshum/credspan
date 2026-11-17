@@ -2,7 +2,7 @@
 
 Credspan's public introduction is a static site at **https://credspan.m1ngshum.com/**. It publishes only the files explicitly copied by `apps/site/build.mjs`. No API, management console code, repository contents, credentials or environment configuration are deployed. The console image is an actual disconnected synthetic-sandbox screenshot with no key or subject data.
 
-The homepage is separate from the local synthetic credential sandbox and does not qualify production credential operations. Its copy states the current modified-wallet compatibility limits and private repository status. Links remain within the public page or point to the builder's public homepage; no inaccessible private-repository CTA is offered.
+The homepage is separate from the local and private hosted synthetic credential sandboxes and does not qualify production credential operations. Its copy states the modified-wallet compatibility limits and links to the public source repository. Hosted sandbox access remains private. Links are limited to this page, the canonical source repository and the builder's public homepage.
 
 ## Build and review
 

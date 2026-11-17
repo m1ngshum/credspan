@@ -1,6 +1,6 @@
 # Initial threat model
 
-This is a design baseline, not evidence of implemented controls. The current runtime is a bounded local synthetic membership sandbox; this document separates implemented compatibility controls from future product controls. Revisit this model with every trust boundary introduced.
+This is a design baseline, not evidence of implemented controls. The current runtime supports bounded local and private hosted synthetic membership sandboxes; this document separates implemented compatibility controls from future product controls. Revisit this model with every trust boundary introduced.
 
 ## Assets and boundaries
 

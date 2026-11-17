@@ -1,6 +1,6 @@
 # Console, contract and generated SDK
 
-Use the pinned Node 26.13.1 / pnpm 12.18.0. This is a single-administrator, synthetic local sandbox. The console does not add user accounts, tenant isolation, wallet custody or production readiness.
+Use the pinned Node 26.13.1 / pnpm 12.18.0. The console serves a single-administrator synthetic sandbox, locally or in the private hosted profile. For hosted access, follow the [hosted runbook](hosted-sandbox.md); the local setup below remains available. The console does not add user accounts, tenant isolation, wallet custody or production readiness.
 
 ```sh
 pnpm install --frozen-lockfile

@@ -9,7 +9,10 @@ test('public artifact has only the homepage allowlist and resolving local links'
   const html = await readFile(new URL('index.html', output), 'utf8');
   for (const [, target] of html.matchAll(/(?:href|src)="(\/[^"#]*)"/g)) await readFile(new URL(target === '/' ? 'index.html' : target.slice(1), output));
   for (const [, id] of html.matchAll(/href="#([^"]+)"/g)) assert.ok(html.includes(`id="${id}"`), `Missing anchor ${id}`);
-  assert.doesNotMatch(html, /<script|<form|localhost|127\.0\.0\.1|href="https:\/\/github\.com\/m1ngshum\/credspan/i);
-  assert.match(html, /local synthetic membership sandbox/);
+  assert.doesNotMatch(html, /<script|<form|localhost|127\.0\.0\.1|repository is currently private/i);
+  assert.match(html, /local and private hosted synthetic membership sandboxes/);
+  assert.match(html, /href="https:\/\/github\.com\/m1ngshum\/credspan"[^>]*>View the source<\/a>/);
+  const external = [...html.matchAll(/href="(https?:[^"\s]+)"/g)].map(([, url]) => url);
+  assert.deepEqual([...new Set(external)].sort(), ['https://credspan.m1ngshum.com/', 'https://github.com/m1ngshum/credspan', 'https://m1ngshum.com/']);
   assert.match(await readFile(new URL('_headers', output), 'utf8'), /default-src 'none'/);
 });
