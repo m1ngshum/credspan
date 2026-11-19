@@ -21,3 +21,13 @@ Future milestones, separately scoped and unimplemented:
 - International credential profiles/conformance and ecosystem-specific trust.
 - Agent identity, explicit delegation and production MCP authorization.
 - AWS ECS/Terraform and Kubernetes Helm deployment helpers, with explicit plans, credential isolation, recovery and acceptance evidence.
+
+## How to qualify the next issuer and verifier workflow
+
+Start with a decision a relying party needs to make, such as checking current membership eligibility. Record who issues the credential, which claims the verifier needs, how it identifies trusted issuers, and what it does when status is unavailable. A government or education profile may require different formats, trust anchors and status rules. Select its exact editions and participants before adding support.
+
+- **Developer setup.** Time a clean checkout through issuance, wallet receipt, presentation, acceptance and refusal after revocation. Record prerequisites, downloads, assistance and cleanup so another developer can repeat the measurement.
+- **Independent interoperability.** Pin the profile, configuration and released versions. Exercise Credspan issuance with an unmodified wallet, then present to both Credspan and a separately implemented verifier. Record each participant’s result and trust configuration. Keep the modified-wallet regression identifiable in the same record.
+- **Adopter evidence.** Have an external team operate the selected workflow and record the setup effort, failures, recovery and reissue burden. Use its result to decide whether to extend Credspan, contribute a compatibility case upstream, or defer the profile.
+
+A published compatibility claim should identify the exact passing combination and its limits. Official conformance or certification requires separate evidence for the applicable program and profile.
