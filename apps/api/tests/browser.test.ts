@@ -159,6 +159,7 @@ test('real browser, generated SDK and independent wallet use unchanged configure
     await expect(page.getByRole('textbox', { name: 'Credential offer', exact: true })).toBeVisible();
     assert.equal(issuancePosts, 1);
     const offer = await page.getByRole('textbox', { name: 'Credential offer', exact: true }).inputValue();
+    const credentialId = page.getByText('Credential ID', { exact: true }).locator('xpath=following-sibling::dd[1]');
     await page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw new Error('synthetic-denial'); } } }); });
     await page.getByRole('button', { name: 'Copy credential offer', exact: true }).click();
     await expect(page.getByText('Could not copy. Select the URL and copy it manually.')).toBeVisible();
@@ -198,10 +199,66 @@ test('real browser, generated SDK and independent wallet use unchanged configure
     await page.getByRole('button', { name: 'Check presentation result' }).click(); await expect(page.getByRole('heading', { name: 'Not accepted', exact: true })).toBeVisible();
     assert.equal(await page.getByText('Original proof verified', { exact: true }).locator('xpath=following-sibling::dd[1]').textContent(), proofTime, 'Historical proof timestamp does not change on revocation');
     const rejected = await getPresentationResult({ client: sdk, path: { id: presentationId } }); assert.equal(rejected.data?.accepted, false); await validateResponse('/api/presentation-requests/{id}/result', 'get', new Response(JSON.stringify(rejected.data), { status: 200 }));
+
+    const createOffer = page.getByRole('button', { name: 'Create offer', exact: true });
+    const offerBox = page.getByRole('textbox', { name: 'Credential offer', exact: true });
+    const consoleNotice = page.locator('.notice[role=status]');
+    const revokedId = await credentialId.innerText();
+    await page.getByLabel('Display name').fill('Original member');
+    await memberId.fill('original-member');
+    await createOffer.click();
+    await expect(consoleNotice).toContainText('Offer created.');
+    await expect(credentialId).not.toHaveText(revokedId);
+    const previousId = await credentialId.innerText();
+    const previousOffer = await offerBox.inputValue();
+
+    // Use a separate wallet so the earlier revoked credential cannot affect selection.
+    const { walletId: replacementWallet } = await walletPost('/wallet', {});
+    const { keyId: replacementKey } = await walletPost(`/wallet/${replacementWallet}/keys/generate`, { backend: 'jwk', keyType: 'secp256r1' });
+    assert.equal((await walletPost(`/wallet/${replacementWallet}/credentials/receive`, { offerUrl: previousOffer, keyId: replacementKey })).credentialIds.length, 1);
+    await page.getByRole('button', { name: 'Check issuance status' }).click();
+    await expect(page.getByText('Completed', { exact: true })).toBeVisible();
+    await page.getByRole('button', { name: 'Create request', exact: true }).click();
+    await expect(requestBox).toBeVisible();
+    assert.equal((await walletPost(`/wallet/${replacementWallet}/credentials/present`, { requestUrl: await requestBox.inputValue() })).transmission_success, true);
+    await page.getByRole('button', { name: 'Check presentation result' }).click();
+    await expect(page.getByRole('heading', { name: 'Accepted at last check' })).toBeVisible();
+
+    // Only the first replacement attempt is simulated. Revocation and retry use the real API.
+    await page.route('**/api/issuance-sessions', route => route.fulfill({ status: 503, json: { message: 'Synthetic unavailable response' } }), { times: 1 });
+    await page.getByLabel('Display name').fill('Replacement member');
+    await memberId.fill('replacement-member');
+    await createOffer.click();
+    await expect(consoleNotice).toContainText('Request failed (503)');
+    await expect(page.getByRole('heading', { name: 'Accepted at last check' })).toHaveCount(0);
+    await expect(requestBox).toHaveCount(0);
+    await expect(page.getByText('Last successful offer', { exact: true })).toBeVisible();
+    await expect(credentialId).toHaveText(previousId);
+    await expect(page.getByText('Completed', { exact: true })).toBeVisible();
+    assert.ok(await offerBox.inputValue() === previousOffer);
+    await page.getByRole('button', { name: 'Revoke issued credential', exact: true }).click();
+    await expect(page.locator('.confirm')).toContainText(previousId);
+    const revoked = page.waitForResponse(response => {
+      const path = decodeURIComponent(new URL(response.url()).pathname);
+      return path === `/api/credentials/${previousId}/revoke` && response.request().method() === 'POST';
+    });
+    await page.getByRole('button', { name: 'Confirm revocation' }).click();
+    assert.equal((await revoked).status(), 201);
+    await expect(page.getByRole('heading', { name: 'Credential revoked', exact: true })).toBeVisible();
+    await expect(consoleNotice).toHaveText('Credential revoked.');
+    const postsBeforeRetry = issuancePosts;
+    await createOffer.click();
+    await expect(consoleNotice).toContainText('Offer created.');
+    assert.equal(issuancePosts, postsBeforeRetry + 1);
+    await expect(credentialId).not.toHaveText(previousId);
+    await expect(credentialId).toHaveCount(1);
+    await expect(page.getByText('Completed', { exact: true })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Revoke issued credential', exact: true })).toBeEnabled();
     assert.equal(await page.evaluate(() => localStorage.length + sessionStorage.length), 0);
     assert.equal(await page.evaluate(async () => (await indexedDB.databases()).length), 0);
     assert.equal(await page.evaluate(secret => document.documentElement.outerHTML.includes(secret), key), false); assert.equal((await page.context().cookies()).length, 0); assert.ok(!page.url().includes(key));
     await page.getByRole('button', { name: 'Disconnect' }).click(); await expect(page.getByLabel('Management key')).toHaveValue(''); await expect(page.locator('textarea')).toHaveCount(0);
+    await expect(credentialId).toHaveCount(0);
     await page.setViewportSize({ width: 390, height: 844 }); assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     assert.deepEqual((await new AxeBuilder({ page }).analyze()).violations.map(violation => violation.id), []);
     await page.getByLabel('Management key').focus(); await page.keyboard.press('Tab'); await expect(page.getByRole('button', { name: 'Connect', exact: true })).toBeFocused();
