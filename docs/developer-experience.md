@@ -8,7 +8,7 @@ pnpm -r build
 pnpm check
 ```
 
-Prefer the [local Compose operations helper](operations.md) for explicit native provisioning and private runtime secrets. For a development fixture, start PostgreSQL/API as described in [the sandbox runbook](sandbox.md), then open `http://127.0.0.1:3000/console/`. The API serves the built console and `/openapi.json` from the same origin; no wildcard CORS or arbitrary server-origin input is enabled. Vite development is optional (set the API's `CONSOLE_DEV_ORIGIN=http://127.0.0.1:5173` explicitly): `pnpm --filter @credspan/console dev` binds loopback and proxies `/api` to the fixed loopback API on port 3000. Use the API-served build for the complete documented/browser-tested journey.
+Prefer the [local Compose operations helper](operations.md) for explicit native provisioning and private runtime secrets. Open `http://127.0.0.1:8080/console/` after Compose startup, or follow the [Compose SDK walkthrough](#from-the-local-compose-sandbox). The API serves the built console and `/openapi.json` from the same origin; no wildcard CORS or arbitrary server-origin input is enabled. A manually started local API on port 3000 serves its console at `http://127.0.0.1:3000/console/`. For Vite development with that API, explicitly set `CONSOLE_DEV_ORIGIN=http://127.0.0.1:5173`. Then `pnpm --filter @credspan/console dev` binds loopback and proxies `/api` to port 3000. Use the API-served build for the complete documented/browser-tested journey.
 
 Enter the management key manually. It stays in memory and is checked on the first request; the console never embeds a key in a build variable, URL, cookie, browser storage or logs. Disconnect clears the client credential callback, aborts requests and clears session/capability/result state. Request identities fence late successes and errors across reconnects and overlapping result reads. Credentials are sent only to the same-origin management API with redirect following disabled. This reduces accidental exposure; it is not protection against malicious extensions or an XSS compromise. Use a trusted isolated machine.
 
@@ -47,7 +47,7 @@ Commit both contract and generated changes. `pnpm check` regenerates into a temp
 
 ### From the local Compose sandbox
 
-Follow [Build, check and explicitly apply](operations.md#build-check-and-explicitly-apply) through `up` using the default `./ops/local-state` project. This starts the API and edge on loopback port 8080. If you already have a wallet, you can keep using it. For the SDK example below, start the optional modified wallet in the same project and discover its assigned loopback port. Run these commands from the repository root with `curl` available:
+Follow [Build, check and explicitly apply](operations.md#build-check-and-explicitly-apply) through `up` using the default `./ops/local-state` project. The Compose edge serves the API on loopback port 8080. The SDK example requires the modified wallet. Start its optional service in the same project and discover its assigned loopback port. Run these commands from the repository root with `curl` 7.71.0 or later:
 
 ```sh
 (
@@ -66,7 +66,7 @@ await withLock(project, 'start', async () => {
 JS
 )
 curl --noproxy '*' --fail --silent --show-error --output /dev/null \
-  --retry 30 --retry-connrefused --retry-delay 1 --retry-max-time 30 --max-time 2 \
+  --retry 30 --retry-all-errors --retry-delay 1 --retry-max-time 30 --max-time 2 \
   "http://${wallet_endpoint}/livez"
 
 export CREDSPAN_API_URL=http://127.0.0.1:8080
