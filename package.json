@@ -9,10 +9,10 @@
     "pnpm": "12.18.0"
   },
   "scripts": {
-    "check": "node --test scripts/check-foundation.test.mjs vendor/waltid/build-command.test.mjs vendor/waltid/build-peer.test.mjs scripts/ci-plan.test.mjs scripts/check-decoder-patches.test.mjs && node scripts/check-foundation.mjs && pnpm check:generated && pnpm -r check",
+    "check": "node --test scripts/check-foundation.test.mjs vendor/waltid/build-command.test.mjs vendor/waltid/build-peer.test.mjs scripts/ci-plan.test.mjs scripts/check-decoder-patches.test.mjs && node scripts/check-foundation.mjs && pnpm check:generated && node --test scripts/check-generated.test.mjs && pnpm -r check",
     "test:integration": "pnpm --filter @credspan/sdk build && pnpm --filter @credspan/api test:integration",
     "test:storage": "pnpm --filter @credspan/sdk build && pnpm --filter @credspan/api test:storage",
-    "generate": "pnpm --filter @credspan/sdk build && pnpm --filter @credspan/api export:openapi && node scripts/check-openapi-input.mjs && pnpm --filter @credspan/sdk generate && pnpm --filter @credspan/sdk build",
+    "generate": "pnpm --filter @credspan/api export:openapi && node scripts/check-openapi-input.mjs && pnpm --filter @credspan/sdk generate && pnpm --filter @credspan/sdk build && pnpm --filter @credspan/api build",
     "check:generated": "node scripts/check-generated.mjs",
     "test:browser": "pnpm --filter @credspan/sdk build && pnpm --filter @credspan/console build && pnpm --filter @credspan/api test:browser",
     "doctor": "node scripts/doctor.mjs",
