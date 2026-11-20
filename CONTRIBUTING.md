@@ -25,3 +25,5 @@ Publishing source exposes repository history and associated GitHub content. It d
 3. Verify least-privilege Actions permissions, no pull-request secrets, immutable action pins and branch protection. Keep the private artifact workflow disabled for public repositories; any public release pipeline needs its own review.
 4. Obtain explicit authorization for the visibility change. After that authorized change, enable and verify private vulnerability reporting and applicable secret-scanning/dependency alerts. Until verified, retain the fallback disclosure route in [SECURITY.md](SECURITY.md).
 5. Keep the hosted API and wallet private under the [hosted sandbox boundary](docs/hosted-sandbox.md). Review any homepage links or status copy separately before publishing that static site; source visibility does not deploy the site or open sandbox access.
+
+For a versioned source preview, use the [public source release process](docs/source-releases.md).
