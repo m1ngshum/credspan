@@ -74,6 +74,9 @@ test('real browser, generated SDK and independent wallet use unchanged configure
     const walletPost = async (path: string, body: unknown) => { const response = await fetch(walletOrigin + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); assert.ok(response.ok, `Wallet endpoint returned ${response.status}`); return await response.json(); };
     const config = readConfig({ CONTROL_DIRECTORY: directory, CREDSPAN_SANDBOX: '1', PUBLIC_URL: `http://host.docker.internal:${apiPort}`, HOST: '0.0.0.0', PORT: String(apiPort), MANAGEMENT_API_KEY: key, ASKAR_STORE_ID: 'credspan_browser', ASKAR_STORE_KEY: randomBytes(32).toString('hex'), POSTGRES_HOST: `127.0.0.1:${pgPort}`, POSTGRES_USER: 'credspan', POSTGRES_PASSWORD: password });
     await provision(config); application = await createApplication(config);
+    const pnpm = process.env.npm_execpath; assert.ok(pnpm, 'Run through pnpm test:browser');
+    const diagnosisOptions = { cwd: new URL('../../../../', import.meta.url), env: { ...process.env, CREDSPAN_API_URL: origin } };
+    await assert.rejects(exec(pnpm, ['run', 'doctor'], diagnosisOptions), { code: 1, stdout: /Local API: unavailable/ });
     await application.app.listen(apiPort, '0.0.0.0');
     const spec = JSON.parse(await readFile(new URL('../../../../packages/sdk/openapi.json', import.meta.url), 'utf8'));
     assert.deepEqual(await (await fetch(origin + '/openapi.json')).json(), spec, 'Runtime and checked-in management contract agree');
@@ -209,7 +212,7 @@ test('real browser, generated SDK and independent wallet use unchanged configure
     assert.deepEqual(errors, []);
     await page.close();
     const example = await exec(process.execPath, [new URL('../../../../examples/membership.mjs', import.meta.url).pathname], { env: { ...process.env, MANAGEMENT_API_KEY: key, CREDSPAN_API_URL: origin, CREDSPAN_WALLET_URL: walletOrigin } });
-    const diagnosis = await exec(process.execPath, [new URL('../../../../scripts/doctor.mjs', import.meta.url).pathname], { env: { ...process.env, CREDSPAN_API_URL: origin } }); assert.ok(diagnosis.stdout.includes('management contract reachable'));
+    const diagnosis = await exec(pnpm, ['run', 'doctor'], diagnosisOptions); assert.ok(diagnosis.stdout.includes('management contract reachable'));
     const exampleResult = JSON.parse(example.stdout); assert.equal(exampleResult.acceptedBeforeRevocation, true); assert.equal(exampleResult.acceptedAfterRevocation, false);
   } finally {
     await browser.close(); if (application) await application.close();

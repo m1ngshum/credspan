@@ -49,10 +49,12 @@ With a running local API and modified wallet peer on loopback ports 3000 and 700
 
 ```sh
 # MANAGEMENT_API_KEY is supplied in the environment, never a CLI argument.
-pnpm doctor
+pnpm run doctor
 pnpm example
 ```
 
-Optional `CREDSPAN_API_URL` and `CREDSPAN_WALLET_URL` select loopback origins for the example. It creates synthetic membership through the generated SDK, has the independent wallet receive/present exact returned URLs, checks the result, revokes and confirms denial with preserved proof time. It prints only a stable credential ID and sanitized assertions; failures do not dump raw requests, credentials or keys. The example still requires correct canonical API URLs for the wallet. `pnpm doctor` reports pinned Node, Docker engine, reviewed peer patch label and the loopback API contract (port 3000 by default, or `CREDSPAN_API_URL`); it never reads/prints database or management secrets.
+Use `pnpm run doctor` to select the project's diagnostic script; `pnpm doctor` runs pnpm's own health checks instead.
+
+Optional `CREDSPAN_API_URL` and `CREDSPAN_WALLET_URL` select loopback origins for the example. It creates synthetic membership through the generated SDK, has the independent wallet receive/present exact returned URLs, checks the result, revokes and confirms denial with preserved proof time. It prints only a stable credential ID and sanitized assertions; failures do not dump raw requests, credentials or keys. The example still requires correct canonical API URLs for the wallet. `pnpm run doctor` reports pinned Node, Docker engine, reviewed peer patch label and the loopback API contract (port 3000 by default, or `CREDSPAN_API_URL`); it never reads/prints database or management secrets.
 
 The CI definition adds the actual browser journey after the pinned peer build and retains the existing aggregate `ci` gate. Local results do not establish hosted CI acceptance; actual hosted checks remain required. New dependencies retain exact direct pins. A qualified child-only js-yaml security patch removes three initially introduced generator advisories; the fresh graph retains one high legacy PEX decoder finding. Codegen also accepts local JSON/internal references only. See [patch provenance](dependency-patches.md) and [dependency risks](compatibility.md). No blanket override, suppression or clean-audit claim is made.
