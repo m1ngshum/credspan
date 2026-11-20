@@ -34,7 +34,7 @@ test('source preview archives the requested commit and records the exact upload 
     assert.equal(manifest.bytes, bytes.length);
     assert.equal(manifest.sha256, createHash('sha256').update(bytes).digest('hex'));
     assert.equal(git(['get-tar-commit-id'], { input: tar }).toString().trim(), commit);
-    assert.deepEqual(tar, git(['archive', '--format=tar', `--prefix=credspan-${version}/`, commit]));
+    assert.deepEqual(tar, git(['-c', 'tar.umask=0002', 'archive', '--format=tar', `--prefix=credspan-${version}/`, commit]));
     assert.match(pack('../local', commit, 'invalid').stderr, /Expected v0/);
     assert.match(pack(version, '0'.repeat(40), 'invalid').stderr, /Checked-out commit differs/);
     const existing = pack(version, commit, 'candidate');

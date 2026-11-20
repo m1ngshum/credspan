@@ -14,7 +14,7 @@ const git = (...args) => execFileSync('git', args, { maxBuffer: 32 * 1024 * 1024
 assert.equal(git('rev-parse', 'HEAD').toString().trim(), commit, 'Checked-out commit differs from the source revision');
 const basename = `credspan-${version}`;
 const archive = `${basename}.tar.gz`;
-const bytes = gzipSync(git('archive', '--format=tar', `--prefix=${basename}/`, commit));
+const bytes = gzipSync(git('-c', 'tar.umask=0002', 'archive', '--format=tar', `--prefix=${basename}/`, commit));
 const sha256 = createHash('sha256').update(bytes).digest('hex');
 const tree = git('rev-parse', `${commit}^{tree}`).toString().trim();
 mkdirSync(directory, { mode: 0o700 });

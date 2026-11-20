@@ -11,7 +11,7 @@ GitHub Releases keeps versioned notes, the immutable tag, and the reviewed files
 3. Review the current [security policy](../SECURITY.md), dependency and compatibility notes, and redistribution notices in the archive. The archive includes the project license, upstream notices and patches. The dependency manifests and lockfile identify source dependencies. There is no packaged runtime to inventory or scan, so image SBOMs, runtime scans, image signatures and architecture qualification are outside this source artifact. Review applicable source and dependency findings before approving the preview. GitHub's immutable release attestation covers the tag, commit, and uploaded assets once published.
 4. Prepare versioned notes using the [preview notes draft](source-preview-notes.md). Use the reviewed diff and Conventional Commits as inputs. State compatibility and recovery limits, and keep private planning details and sensitive security evidence out of public notes. Review the notes together with the exact archive and manifest.
 
-From inside the downloaded artifact directory, with the version and commit set to the reviewed values:
+From inside the downloaded artifact directory, set `version` and `commit` to the reviewed values and `trusted_checkout` to the path of a canonical Git checkout containing that commit:
 
 ```sh
 (
@@ -19,14 +19,21 @@ set -eu
 archive="credspan-${version}.tar.gz"
 test "$(jq -r .version source-preview.json)" = "$version"
 test "$(jq -r .commit source-preview.json)" = "$commit"
+test "$(jq -r .tree source-preview.json)" = "$(git -C "$trusted_checkout" rev-parse "$commit^{tree}")"
 test "$(jq -r .archive source-preview.json)" = "$archive"
 test "$(shasum -a 256 "$archive" | cut -d ' ' -f 1)" = "$(jq -r .sha256 source-preview.json)"
 test "$(wc -c < "$archive" | tr -d '[:space:]')" = "$(jq -r .bytes source-preview.json)"
-test "$(gzip -dc "$archive" | git get-tar-commit-id)" = "$commit"
+scratch=$(mktemp -d)
+trap 'rm -r "$scratch"' EXIT
+gzip -dc "$archive" > "$scratch/downloaded.tar"
+test "$(git get-tar-commit-id < "$scratch/downloaded.tar")" = "$commit"
+git -C "$trusted_checkout" -c tar.umask=0002 archive --format=tar \
+  --prefix="credspan-${version}/" "$commit" > "$scratch/expected.tar"
+cmp "$scratch/downloaded.tar" "$scratch/expected.tar"
 )
 ```
 
-Stop if any check fails. For a local packaging dry run, run `node ops/source-preview.mjs "$version" "$commit" "$output"` from the checkout at the exact commit, using a new output directory. Local packaging verifies source identity but does not check hosted CI or generate a release attestation.
+Stop if any check fails. For a local packaging dry run, run `node ops/source-preview.mjs "$version" "$commit" "$output"` from the checkout at the exact commit, using a new output directory. Local packaging verifies source identity but does not check hosted CI or generate a release attestation. The source archive is for inspection. Clone the canonical Git tag for the developer setup because the build and checks require Git metadata.
 
 ## Promote the reviewed bytes
 
