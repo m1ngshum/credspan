@@ -41,7 +41,7 @@ pnpm generate
 pnpm check:generated
 ```
 
-Commit both contract and generated changes. `pnpm check` includes a byte-for-byte freshness comparison before/after regeneration; missing, changed or stale artifacts fail. Generation runs TypeScript builds so the generator's permissive exit behavior cannot silently admit missing SDK output. The generated code may include unused generic Fetch support templates; those are upstream generated artifacts, not claims of corresponding Credspan APIs.
+Commit both contract and generated changes. `pnpm check` regenerates into a temporary workspace and compares the files byte for byte. Missing, changed or extra artifacts fail the check and your files stay in place. Run `pnpm generate` to refresh the artifacts explicitly, including when they are missing. Generation runs TypeScript builds so the generator's permissive exit behavior cannot silently admit missing SDK output. The generated code may include unused generic Fetch support templates; those are upstream generated artifacts, not claims of corresponding Credspan APIs.
 
 ## Example and diagnostics
 

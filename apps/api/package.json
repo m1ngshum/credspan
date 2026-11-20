@@ -10,7 +10,7 @@
     "start": "node dist/src/main.js",
     "test:integration": "pnpm build && node --test --test-concurrency=1 dist/tests/integration.test.js",
     "test:storage": "pnpm build && node --test dist/tests/storage.test.js",
-    "export:openapi": "pnpm build && node dist/src/export-openapi.js",
+    "export:openapi": "tsc -p tsconfig.export.json && node dist/src/export-openapi.js",
     "test:browser": "pnpm build && node --test dist/tests/browser.test.js"
   },
   "dependencies": {
