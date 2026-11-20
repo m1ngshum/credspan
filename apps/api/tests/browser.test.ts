@@ -132,13 +132,32 @@ test('real browser, generated SDK and independent wallet use unchanged configure
     await expect(page.getByLabel('Display name')).toHaveAttribute('aria-invalid', 'true');
     await expect(page.getByRole('alert')).toContainText('100 Unicode code points');
     await expect(page.getByLabel('Display name')).toBeFocused();
-    await page.route('**/api/issuance-sessions', async route => { await delay(250); await route.continue(); });
+    let issuancePosts = 0;
+    await page.route('**/api/issuance-sessions', async route => {
+      if (route.request().method() === 'POST') issuancePosts++;
+      await delay(250); await route.continue();
+    });
     await page.getByLabel('Display name').fill('😀'.repeat(100));
     await expect(page.getByLabel('Display name')).toHaveAttribute('aria-invalid', 'false');
+    const memberId = page.getByLabel('Member ID', { exact: true });
+    await expect(memberId).toHaveAttribute('maxlength', '64');
+    for (const value of ['bad space', '!']) {
+      await memberId.fill(value);
+      assert.equal(await memberId.evaluate((input: HTMLInputElement) => input.checkValidity()), false);
+      await page.getByRole('button', { name: 'Create offer' }).click();
+      await expect(memberId).toBeFocused();
+      assert.equal(issuancePosts, 0);
+    }
+    for (const value of ['normal-01', 'normal-01._'.padEnd(64, 'a')]) {
+      await memberId.fill(value);
+      await expect(memberId).toHaveValue(value);
+      assert.equal(await memberId.evaluate((input: HTMLInputElement) => input.checkValidity()), true);
+    }
     await page.getByRole('button', { name: 'Create offer' }).click();
     await expect(page.getByRole('button', { name: 'Creating offer…' })).toBeVisible();
     await expect(page.locator('.card').first()).toHaveAttribute('aria-busy', 'true');
     await expect(page.getByRole('textbox', { name: 'Credential offer', exact: true })).toBeVisible();
+    assert.equal(issuancePosts, 1);
     const offer = await page.getByRole('textbox', { name: 'Credential offer', exact: true }).inputValue();
     await page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw new Error('synthetic-denial'); } } }); });
     await page.getByRole('button', { name: 'Copy credential offer', exact: true }).click();
