@@ -10,6 +10,8 @@ node ops/local.mjs provision ./ops/local-state --apply
 node ops/local.mjs up ./ops/local-state --apply
 ```
 
+To run the synthetic SDK walkthrough, [start the optional Compose wallet and run the example](developer-experience.md#from-the-local-compose-sandbox).
+
 The canonical protocol URL and external generation are persisted boundaries. Do not pre-create an empty Askar database or silently regenerate a missing identity. Runtime opens only a provisioned store and requires private `CONTROL_DIRECTORY` state. Additional workers may open the same initialized store/key; parallel first provisioning is not supported. Upgrade/recovery is explicit and disruptive, as described in the operations runbook. The older root development Compose database fixture is not the restricted deployment profile.
 
 `POST /api/roundtrips` with exactly `{}` and `Authorization: Bearer <management-key>` returns a synthetic credential offer, a fixed final OID4VP/DCQL request URI, and an opaque verification-session ID. `GET /api/roundtrips/{id}` requires the same management key and returns cryptographic state/version only. Treat returned offer/request URLs as short-lived capabilities. No caller-supplied subjects, query profiles, draft versions or credential formats are accepted. API creation is unbounded at this stage; expose it only locally and discard the sandbox store when finished.

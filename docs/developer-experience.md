@@ -45,7 +45,46 @@ Commit both contract and generated changes. `pnpm check` regenerates into a temp
 
 ## Example and diagnostics
 
-With a running local API and modified wallet peer on loopback ports 3000 and 7006:
+### From the local Compose sandbox
+
+Follow [Build, check and explicitly apply](operations.md#build-check-and-explicitly-apply) through `up` using the default `./ops/local-state` project. This starts the API and edge on loopback port 8080. If you already have a wallet, you can keep using it. For the SDK example below, start the optional modified wallet in the same project and discover its assigned loopback port. Run these commands from the repository root with `curl` available:
+
+```sh
+(
+set -eu
+wallet_endpoint=$(node --input-type=module <<'JS'
+import assert from 'node:assert/strict';
+import { compose, load, withLock } from './ops/local.mjs';
+
+const project = await load('./ops/local-state');
+await withLock(project, 'start', async () => {
+  compose(project, ['--profile', 'holder', 'up', '-d', '--wait', 'wallet']);
+  const endpoint = compose(project, ['--profile', 'holder', 'port', 'wallet', '7006']);
+  assert.match(endpoint, /^127\.0\.0\.1:[0-9]+$/, 'Expected a loopback wallet endpoint');
+  console.log(endpoint);
+});
+JS
+)
+curl --noproxy '*' --fail --silent --show-error --output /dev/null \
+  --retry 30 --retry-connrefused --retry-delay 1 --retry-max-time 30 --max-time 2 \
+  "http://${wallet_endpoint}/livez"
+
+export CREDSPAN_API_URL=http://127.0.0.1:8080
+export CREDSPAN_WALLET_URL="http://${wallet_endpoint}"
+export CREDSPAN_HOSTED_SANDBOX=0
+export MANAGEMENT_API_KEY_FILE="$PWD/ops/local-state/secrets/management_key"
+pnpm run doctor
+pnpm example
+)
+```
+
+The example creates synthetic membership, receives and presents it through the wallet, then revokes it. Look for `acceptedBeforeRevocation: true`, `acceptedAfterRevocation: false`, and `historicalProofPreserved: true` in the JSON result. The Compose wallet follows the returned canonical URLs through its network alias. Keep those URLs unchanged and leave the key in its private file.
+
+When finished, run `node ops/local.mjs down ./ops/local-state --apply` to stop the API, edge, database and optional wallet. The command retains the state and volumes.
+
+### From a manually started API and wallet
+
+With both services running on loopback ports 3000 and 7006:
 
 ```sh
 # MANAGEMENT_API_KEY is supplied in the environment, never a CLI argument.
