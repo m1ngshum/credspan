@@ -192,8 +192,8 @@ importers:
         specifier: 0.7.4
         version: 0.7.4(typescript@6.0.3)
       '@credo-ts/openid4vc':
-        specifier: 0.7.4
-        version: 0.7.4(typescript@6.0.3)
+        specifier: 0.7.5
+        version: 0.7.5(typescript@6.0.3)
       '@nestjs/common':
         specifier: 12.6.0
         version: 12.6.0(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -355,6 +355,9 @@ packages:
   '@credo-ts/core@0.7.4':
     resolution: {integrity: sha512-pBPwAWOttA2795567BHS8FxWxtnj5RYNowC6U6j7WQ6y4kED1o3ueRAgsP9dpogWMZ97ilaVUyk9eDScN86+9g==}
 
+  '@credo-ts/core@0.7.5':
+    resolution: {integrity: sha512-ooKDoEh7ePpk6TByUmG/zeg5JRhoFDUxCDFXK3oxK/1iTK2qMpvfOHOee9RgzdW8nSK+uTSXohx0iNoAJnlZzA==}
+
   '@credo-ts/didcomm@0.7.4':
     resolution: {integrity: sha512-wTzzEo6moRt5xZnvkfEwPhANWfCiM9laLPmPfiY2Cir2ITiSMZB1fg2eGWJaDWZZC8rf1lUI8fKn2rBGCeKxsg==}
 
@@ -362,8 +365,8 @@ packages:
     resolution: {integrity: sha512-QpWkZnpP2XW4cUhWjFGzVdM615vXAzx8VX6eK3X/nRksbFfBuk3dRXQq6ivZgAsRK1qUmjcUkmwV8XFNvuiDHw==}
     engines: {node: '>=20.19'}
 
-  '@credo-ts/openid4vc@0.7.4':
-    resolution: {integrity: sha512-DDv+Ah5sCK2IX+B4dBDbd5RaFR0jOGUXJcqp7nZh/XnqmrWcK5H14dZ4bxzCGUcXOFIhLmL8eu+dos/Ge+Vziw==}
+  '@credo-ts/openid4vc@0.7.5':
+    resolution: {integrity: sha512-BtkDqgOzkFAENzdLvHbczwavLotWkOI2qgZVaYSqp3jjCIU3H9mqrOkh4ikrj/dnJtlbkKHexGWgqE5v+ZznzA==}
 
   '@digitalbazaar/security-context@1.0.1':
     resolution: {integrity: sha512-0WZa6tPiTZZF8leBtQgYAfXQePFQp2z5ivpCEN/iZguYYZ0TB9qRmWtan5XH6mNFuusHtMcyIzAcReyE6rZPhA==}
@@ -596,6 +599,9 @@ packages:
 
   '@owf/identity-common@0.5.0':
     resolution: {integrity: sha512-h8lto+C1h6wYLe9HwF3C7NaZyB0wydstmdkgrGrpWhfCyyX+XfBZtIC494reAaj19pQTXIdEsNC91Gheo25T+Q==}
+
+  '@owf/mdoc@0.8.2':
+    resolution: {integrity: sha512-Mmn8a7Xy2duwoX5x3LeNkzOeOIjrjInygfPWi43Xy6DnNQprXSymB1KTwHWDGvBoTcopg7APDL41oTgSWri0ZA==}
 
   '@owf/mdoc@0.8.3':
     resolution: {integrity: sha512-hNakQwZByOaEvrJL3/lv9ld64zcff34T+RpOsoFeFofzLZ1HLpakvIqsybZ4s9AYYEXpR7QkXPvzzNL0041MlA==}
@@ -2252,6 +2258,55 @@ snapshots:
       - supports-color
       - typescript
 
+  '@credo-ts/core@0.7.5(typescript@6.0.3)':
+    dependencies:
+      '@animo-id/pex': 6.1.1
+      '@astronautlabs/jsonpath': 1.1.2
+      '@digitalcredentials/jsonld': 9.0.0
+      '@digitalcredentials/jsonld-signatures': 12.0.1
+      '@digitalcredentials/vc': 10.0.2
+      '@multiformats/base-x': 4.0.1
+      '@noble/curves': 2.4.0
+      '@noble/hashes': 2.4.0
+      '@owf/cose': 0.4.2
+      '@owf/mdoc': 0.8.2
+      '@owf/token-status-list': 0.4.2
+      '@peculiar/asn1-ecc': 2.11.1
+      '@peculiar/asn1-rsa': 2.11.1
+      '@peculiar/asn1-schema': 2.11.1
+      '@peculiar/asn1-x509': 2.11.1
+      '@peculiar/x509': 2.2.0
+      '@scure/base': 2.4.0
+      '@sd-jwt/core': 0.21.1
+      '@sd-jwt/sd-jwt-vc': 0.21.1
+      '@sphereon/pex-models': 2.3.2
+      '@sphereon/ssi-types': 0.33.0
+      '@stablelib/ed25519': 2.1.0
+      '@types/events': 3.0.3
+      '@types/ws': 8.18.2
+      '@verifiables/request-converter': 0.2.0(dcql@3.0.1(typescript@6.0.3))
+      class-transformer: 0.5.1
+      class-validator: 0.14.4
+      dcql: 3.0.1(typescript@6.0.3)
+      did-resolver: 4.1.0
+      ec-compression: 2.0.0
+      json-canonicalize: 3.0.1
+      lru_map: 0.4.1
+      make-error: 1.3.6
+      object-inspect: 1.13.4
+      reflect-metadata: 0.2.2
+      rxjs: 7.8.2
+      tsyringe: 4.10.0
+      uuid: 14.0.3
+      varint: 6.0.0
+      web-did-resolver: 2.0.32
+      webcrypto-core: 1.9.2
+      zod: 4.6.7
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+      - typescript
+
   '@credo-ts/didcomm@0.7.4(typescript@6.0.3)':
     dependencies:
       '@credo-ts/core': 0.7.4(typescript@6.0.3)
@@ -2283,9 +2338,9 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@credo-ts/openid4vc@0.7.4(typescript@6.0.3)':
+  '@credo-ts/openid4vc@0.7.5(typescript@6.0.3)':
     dependencies:
-      '@credo-ts/core': 0.7.4(typescript@6.0.3)
+      '@credo-ts/core': 0.7.5(typescript@6.0.3)
       '@openid4vc/oauth2': 0.6.0
       '@openid4vc/openid4vci': 0.6.0
       '@openid4vc/openid4vp': 0.6.0
@@ -2579,6 +2634,13 @@ snapshots:
   '@owf/identity-common@0.4.2': {}
 
   '@owf/identity-common@0.5.0': {}
+
+  '@owf/mdoc@0.8.2':
+    dependencies:
+      '@owf/cose': 0.4.2
+      '@owf/identity-common': 0.4.2
+      '@owf/token-status-list': 0.4.2
+      zod: 4.6.7
 
   '@owf/mdoc@0.8.3':
     dependencies:
