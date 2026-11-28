@@ -29,7 +29,7 @@ export function installIssuanceBoundaries(service: OpenId4VcIssuerService, issue
     if (state === OpenId4VcIssuanceSessionState.OfferUriRetrieved) return;
     // Credo's endpoint catch must not let a losing request overwrite the winning state.
     if (state === OpenId4VcIssuanceSessionState.Error && unclaimedRequests.has(session)) return;
-    // Credo 0.7.4 reaches this transition only after full grant/PIN/client proof validation.
+    // Credo 0.7.5 reaches this transition only after full grant/PIN/client proof validation.
     if (state === OpenId4VcIssuanceSessionState.AccessTokenRequested) {
       if (session.issuerId !== issuerId || session.openId4VciVersion !== 'v1') throw new Oauth2ServerErrorResponseError({ error: 'invalid_grant', error_description: 'Unsupported issuance session' });
       membershipMetadata(session.issuanceMetadata);

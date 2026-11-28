@@ -183,14 +183,14 @@ importers:
   apps/api:
     dependencies:
       '@credo-ts/askar':
-        specifier: 0.7.4
-        version: 0.7.4(@openwallet-foundation/askar-shared@0.6.1)(typescript@6.0.3)
+        specifier: 0.7.5
+        version: 0.7.5(@openwallet-foundation/askar-shared@0.6.1)(typescript@6.0.3)
       '@credo-ts/core':
-        specifier: 0.7.4
-        version: 0.7.4(typescript@6.0.3)
+        specifier: 0.7.5
+        version: 0.7.5(typescript@6.0.3)
       '@credo-ts/node':
-        specifier: 0.7.4
-        version: 0.7.4(typescript@6.0.3)
+        specifier: 0.7.5
+        version: 0.7.5(typescript@6.0.3)
       '@credo-ts/openid4vc':
         specifier: 0.7.5
         version: 0.7.5(typescript@6.0.3)
@@ -347,22 +347,19 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@credo-ts/askar@0.7.4':
-    resolution: {integrity: sha512-ovBUc2JaJk0vk99CBEaWgfsTsnTUj7r5kkShmucuh8V4NZgZp50QgsI0sQnvYOtellPIrRWfsIFmhe1XI/ekFQ==}
+  '@credo-ts/askar@0.7.5':
+    resolution: {integrity: sha512-NQ/nG+xxM/5JB6nxgdcb0E0JmFm0fBWi4Gb5FknU4/MpfxfSp5Y29Nmnk7501+efvBF3iAZXDeJb6qC+Y9L2eA==}
     peerDependencies:
       '@openwallet-foundation/askar-shared': ^0.4.3 || ^0.5.0 || ^0.6.0
-
-  '@credo-ts/core@0.7.4':
-    resolution: {integrity: sha512-pBPwAWOttA2795567BHS8FxWxtnj5RYNowC6U6j7WQ6y4kED1o3ueRAgsP9dpogWMZ97ilaVUyk9eDScN86+9g==}
 
   '@credo-ts/core@0.7.5':
     resolution: {integrity: sha512-ooKDoEh7ePpk6TByUmG/zeg5JRhoFDUxCDFXK3oxK/1iTK2qMpvfOHOee9RgzdW8nSK+uTSXohx0iNoAJnlZzA==}
 
-  '@credo-ts/didcomm@0.7.4':
-    resolution: {integrity: sha512-wTzzEo6moRt5xZnvkfEwPhANWfCiM9laLPmPfiY2Cir2ITiSMZB1fg2eGWJaDWZZC8rf1lUI8fKn2rBGCeKxsg==}
+  '@credo-ts/didcomm@0.7.5':
+    resolution: {integrity: sha512-7FZ4o6cWNEiqyjUtqS7q1LRltKnns+GojiL9MtSxVC6JOPbm91TUqUdn9CHHDfq5+IMpD7v3thKU69txRbAobQ==}
 
-  '@credo-ts/node@0.7.4':
-    resolution: {integrity: sha512-QpWkZnpP2XW4cUhWjFGzVdM615vXAzx8VX6eK3X/nRksbFfBuk3dRXQq6ivZgAsRK1qUmjcUkmwV8XFNvuiDHw==}
+  '@credo-ts/node@0.7.5':
+    resolution: {integrity: sha512-F6/U26lN5E8Sg39sMPO2TcuVBMM5SO7cqb1ReOIbOlp6bVRTr+bkKD3OoQDzueIp3elOf/dVdZMnmZhYVv1TVw==}
     engines: {node: '>=20.19'}
 
   '@credo-ts/openid4vc@0.7.5':
@@ -591,26 +588,14 @@ packages:
   '@owf/cose@0.4.2':
     resolution: {integrity: sha512-ISjH/NFxgI2p0jiCY462JdL5m2bHg850iehvYj8sL9dHra06sJy0RTO1dwx78xqpCkFc/4h9Oo8XXLQD1eyLMg==}
 
-  '@owf/cose@0.5.0':
-    resolution: {integrity: sha512-QYTZP1pHJzraX9GVx3MvRs0DWVnYDho5fWyyElBNvr0axG3xHOmaK1v3EFFABHkxRhD8xbFC/YwnWqw+1MQHZw==}
-
   '@owf/identity-common@0.4.2':
     resolution: {integrity: sha512-z+iFDpBYo2Z2uVnE5UytKlAHPaKHReijHaVXl45Yb9LbeR12hGg5CdfzfY0Tfm5m/Dr8iClfAiFizA9JYuUJ0Q==}
-
-  '@owf/identity-common@0.5.0':
-    resolution: {integrity: sha512-h8lto+C1h6wYLe9HwF3C7NaZyB0wydstmdkgrGrpWhfCyyX+XfBZtIC494reAaj19pQTXIdEsNC91Gheo25T+Q==}
 
   '@owf/mdoc@0.8.2':
     resolution: {integrity: sha512-Mmn8a7Xy2duwoX5x3LeNkzOeOIjrjInygfPWi43Xy6DnNQprXSymB1KTwHWDGvBoTcopg7APDL41oTgSWri0ZA==}
 
-  '@owf/mdoc@0.8.3':
-    resolution: {integrity: sha512-hNakQwZByOaEvrJL3/lv9ld64zcff34T+RpOsoFeFofzLZ1HLpakvIqsybZ4s9AYYEXpR7QkXPvzzNL0041MlA==}
-
   '@owf/token-status-list@0.4.2':
     resolution: {integrity: sha512-vBIpSRvfgRTWq1pjs7ERafdEjKpkRRcPdMRpKM1BEsKp1mwB6p6cinf95oWOgXKWq8s3l0I4yTzZ1SdIM8/z0Q==}
-
-  '@owf/token-status-list@0.5.0':
-    resolution: {integrity: sha512-sM3WsYsCdwlUUrRekCOwslIhS8QfBDON/WErUzqHRt0ubgX4IDgLdlJXxOAjmK6LOW4spOSLf02GJIJOrefb4A==}
 
   '@oxc-project/types@0.156.0':
     resolution: {integrity: sha512-1Duyg48TdJNdyhEB8Xn1L36bT9Pv6GUtlKjHxOys8xkaF/rQq3XJE+bAurSK/AgIz5mGFsb77cn9Pb20+WCScw==}
@@ -2193,9 +2178,9 @@ snapshots:
   '@cbor-extract/cbor-extract-win32-x64@2.2.3':
     optional: true
 
-  '@credo-ts/askar@0.7.4(@openwallet-foundation/askar-shared@0.6.1)(typescript@6.0.3)':
+  '@credo-ts/askar@0.7.5(@openwallet-foundation/askar-shared@0.6.1)(typescript@6.0.3)':
     dependencies:
-      '@credo-ts/core': 0.7.4(typescript@6.0.3)
+      '@credo-ts/core': 0.7.5(typescript@6.0.3)
       '@noble/curves': 2.4.0
       '@openwallet-foundation/askar-shared': 0.6.1
       '@panva/hpke-noble': 1.1.8(hpke@1.1.8)
@@ -2204,55 +2189,6 @@ snapshots:
       hpke: 1.1.8
       rxjs: 7.8.2
       tsyringe: 4.10.0
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-      - typescript
-
-  '@credo-ts/core@0.7.4(typescript@6.0.3)':
-    dependencies:
-      '@animo-id/pex': 6.1.1
-      '@astronautlabs/jsonpath': 1.1.2
-      '@digitalcredentials/jsonld': 9.0.0
-      '@digitalcredentials/jsonld-signatures': 12.0.1
-      '@digitalcredentials/vc': 10.0.2
-      '@multiformats/base-x': 4.0.1
-      '@noble/curves': 2.4.0
-      '@noble/hashes': 2.4.0
-      '@owf/cose': 0.4.2
-      '@owf/mdoc': 0.8.3
-      '@owf/token-status-list': 0.4.2
-      '@peculiar/asn1-ecc': 2.11.1
-      '@peculiar/asn1-rsa': 2.11.1
-      '@peculiar/asn1-schema': 2.11.1
-      '@peculiar/asn1-x509': 2.11.1
-      '@peculiar/x509': 2.2.0
-      '@scure/base': 2.4.0
-      '@sd-jwt/core': 0.21.1
-      '@sd-jwt/sd-jwt-vc': 0.21.1
-      '@sphereon/pex-models': 2.3.2
-      '@sphereon/ssi-types': 0.33.0
-      '@stablelib/ed25519': 2.1.0
-      '@types/events': 3.0.3
-      '@types/ws': 8.18.2
-      '@verifiables/request-converter': 0.2.0(dcql@3.0.1(typescript@6.0.3))
-      class-transformer: 0.5.1
-      class-validator: 0.14.4
-      dcql: 3.0.1(typescript@6.0.3)
-      did-resolver: 4.1.0
-      ec-compression: 2.0.0
-      json-canonicalize: 3.0.1
-      lru_map: 0.4.1
-      make-error: 1.3.6
-      object-inspect: 1.13.4
-      reflect-metadata: 0.2.2
-      rxjs: 7.8.2
-      tsyringe: 4.10.0
-      uuid: 14.0.3
-      varint: 6.0.0
-      web-did-resolver: 2.0.32
-      webcrypto-core: 1.9.2
-      zod: 4.6.7
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -2307,9 +2243,9 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/didcomm@0.7.4(typescript@6.0.3)':
+  '@credo-ts/didcomm@0.7.5(typescript@6.0.3)':
     dependencies:
-      '@credo-ts/core': 0.7.4(typescript@6.0.3)
+      '@credo-ts/core': 0.7.5(typescript@6.0.3)
       class-transformer: 0.5.1
       class-validator: 0.14.4
       luxon: 3.7.2
@@ -2320,10 +2256,10 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/node@0.7.4(typescript@6.0.3)':
+  '@credo-ts/node@0.7.5(typescript@6.0.3)':
     dependencies:
-      '@credo-ts/core': 0.7.4(typescript@6.0.3)
-      '@credo-ts/didcomm': 0.7.4(typescript@6.0.3)
+      '@credo-ts/core': 0.7.5(typescript@6.0.3)
+      '@credo-ts/didcomm': 0.7.5(typescript@6.0.3)
       '@types/express': 5.0.6
       '@types/node': 20.19.43
       '@types/ws': 8.18.2
@@ -2624,16 +2560,7 @@ snapshots:
       zod: 4.6.7
       zod-validation-error: 5.0.0(zod@4.6.7)
 
-  '@owf/cose@0.5.0':
-    dependencies:
-      '@owf/identity-common': 0.5.0
-      cbor-x: 1.6.9
-      zod: 4.6.7
-      zod-validation-error: 5.0.0(zod@4.6.7)
-
   '@owf/identity-common@0.4.2': {}
-
-  '@owf/identity-common@0.5.0': {}
 
   '@owf/mdoc@0.8.2':
     dependencies:
@@ -2642,25 +2569,10 @@ snapshots:
       '@owf/token-status-list': 0.4.2
       zod: 4.6.7
 
-  '@owf/mdoc@0.8.3':
-    dependencies:
-      '@owf/cose': 0.5.0
-      '@owf/identity-common': 0.5.0
-      '@owf/token-status-list': 0.5.0
-      zod: 4.6.7
-
   '@owf/token-status-list@0.4.2':
     dependencies:
       '@owf/cose': 0.4.2
       '@owf/identity-common': 0.4.2
-      cbor-x: 1.6.9
-      pako: 3.0.3
-      zod: 4.6.7
-
-  '@owf/token-status-list@0.5.0':
-    dependencies:
-      '@owf/cose': 0.5.0
-      '@owf/identity-common': 0.5.0
       cbor-x: 1.6.9
       pako: 3.0.3
       zod: 4.6.7
