@@ -184,7 +184,7 @@ importers:
     dependencies:
       '@credo-ts/askar':
         specifier: 0.7.5
-        version: 0.7.5(@openwallet-foundation/askar-shared@0.6.1)(typescript@6.0.3)
+        version: 0.7.5(@openwallet-foundation/askar-shared@0.7.1)(typescript@6.0.3)
       '@credo-ts/core':
         specifier: 0.7.5
         version: 0.7.5(typescript@6.0.3)
@@ -213,8 +213,8 @@ importers:
         specifier: 0.6.1
         version: 0.6.1
       '@openwallet-foundation/askar-shared':
-        specifier: 0.6.1
-        version: 0.6.1
+        specifier: 0.7.1
+        version: 0.7.1
       express:
         specifier: 5.3.0
         version: 5.3.0
@@ -584,6 +584,9 @@ packages:
 
   '@openwallet-foundation/askar-shared@0.6.1':
     resolution: {integrity: sha512-xjFYyK5Zk/uTFKfTn2BnnldmBLGWBkVfPhOoXQl122YcRVPN7BadAvFUi6Ad+zu7Nk3axj416+fvXtUUQm1Vig==}
+
+  '@openwallet-foundation/askar-shared@0.7.1':
+    resolution: {integrity: sha512-gBl+9hlSXs0qLkCO8lBmXBDuudvhPWoQT/63be1nvGjoRB/zCEfTerj5Xzgm7d/5swBA3Tqqq/OvDvMSNRCdlg==}
 
   '@owf/cose@0.4.2':
     resolution: {integrity: sha512-ISjH/NFxgI2p0jiCY462JdL5m2bHg850iehvYj8sL9dHra06sJy0RTO1dwx78xqpCkFc/4h9Oo8XXLQD1eyLMg==}
@@ -2178,11 +2181,11 @@ snapshots:
   '@cbor-extract/cbor-extract-win32-x64@2.2.3':
     optional: true
 
-  '@credo-ts/askar@0.7.5(@openwallet-foundation/askar-shared@0.6.1)(typescript@6.0.3)':
+  '@credo-ts/askar@0.7.5(@openwallet-foundation/askar-shared@0.7.1)(typescript@6.0.3)':
     dependencies:
       '@credo-ts/core': 0.7.5(typescript@6.0.3)
       '@noble/curves': 2.4.0
-      '@openwallet-foundation/askar-shared': 0.6.1
+      '@openwallet-foundation/askar-shared': 0.7.1
       '@panva/hpke-noble': 1.1.8(hpke@1.1.8)
       class-transformer: 0.5.1
       class-validator: 0.14.4
@@ -2549,6 +2552,11 @@ snapshots:
       koffi: 2.16.3
 
   '@openwallet-foundation/askar-shared@0.6.1':
+    dependencies:
+      buffer: 6.0.3
+      tar: 7.5.22
+
+  '@openwallet-foundation/askar-shared@0.7.1':
     dependencies:
       buffer: 6.0.3
       tar: 7.5.22
