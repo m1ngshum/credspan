@@ -207,8 +207,8 @@ importers:
         specifier: 12.1.2
         version: 12.1.2(@nestjs/common@12.6.0(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@12.5.0)(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(typescript@6.0.3)
       '@openid4vc/oauth2':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.11.0
+        version: 0.11.0
       '@openwallet-foundation/askar-nodejs':
         specifier: 0.6.1
         version: 0.6.1
@@ -566,6 +566,9 @@ packages:
     resolution: {integrity: sha512-+P9981IiAnVh+rmcubozzVwrEy3XsN/tMhTnvsjV9VDaYpOnNCqWqKo2FLWxbu92YHfjGIlE5XnW175UK+ln+Q==}
     engines: {node: '>= 20.19.0'}
 
+  '@openid4vc/oauth2@0.11.0':
+    resolution: {integrity: sha512-5cCkdGkTMuB3AtVhlW187x9EcR6GsQPGoqGP+UpODJfSPsuvhwV8IW7APCsxtEA7EbDR7Abw20NASTAOB6otHg==}
+
   '@openid4vc/oauth2@0.6.0':
     resolution: {integrity: sha512-RUFhS+3La1NtIk7kE0MaikE4mmn3uzaKrVNffdlM/fYEGwddJYosikHpTOzoDUPPhXdNSVHPEoF57SLcZTu7ag==}
 
@@ -574,6 +577,9 @@ packages:
 
   '@openid4vc/openid4vp@0.6.0':
     resolution: {integrity: sha512-u1AcPHiGRZNKoFsg8knn8sEjbPtAtBOO0/AGlLxRUt7aWHS12docRgl7jPUuD6isU5FS4oCOMumP3jCnFB38qw==}
+
+  '@openid4vc/utils@0.11.0':
+    resolution: {integrity: sha512-Qos9CbnYv5YrBsUYqpY/ehtTumwHSvgFwSvep5y952uXAZk7BBndLIUbgpFkHjOKwzHyA9eKqkUDkc+mNXLrMw==}
 
   '@openid4vc/utils@0.6.0':
     resolution: {integrity: sha512-oowl3vQf0yMxaQe96fZjLfAcqjzkxl/A8N2Z9GkXqnQUd17RAEnDpnzq9/MkRasf6x9co5fkKMYIkEn8ApIjQw==}
@@ -590,6 +596,12 @@ packages:
 
   '@owf/identity-common@0.4.2':
     resolution: {integrity: sha512-z+iFDpBYo2Z2uVnE5UytKlAHPaKHReijHaVXl45Yb9LbeR12hGg5CdfzfY0Tfm5m/Dr8iClfAiFizA9JYuUJ0Q==}
+
+  '@owf/identity-common@0.9.0':
+    resolution: {integrity: sha512-RDwGKF57dGpEwQrmQDw8iJbxDUkGGBtqhz/ae40ngm42ZkAnwkRP/0MH5ktdLkS8v0gQmciWStTOFbFYNm/UYw==}
+
+  '@owf/jose@0.9.0':
+    resolution: {integrity: sha512-oKmvskt3myK+sDAFGtwsQeyxiJQtO1LLreclG+NQfUbDf7uXwoMabTA4uLuVrtBeMQnrvTBaiPdQO4rC7dOXpQ==}
 
   '@owf/mdoc@0.8.2':
     resolution: {integrity: sha512-Mmn8a7Xy2duwoX5x3LeNkzOeOIjrjInygfPWi43Xy6DnNQprXSymB1KTwHWDGvBoTcopg7APDL41oTgSWri0ZA==}
@@ -2520,6 +2532,13 @@ snapshots:
       '@noble/curves': 2.4.0
       '@noble/hashes': 2.4.0
 
+  '@openid4vc/oauth2@0.11.0':
+    dependencies:
+      '@openid4vc/utils': 0.11.0
+      '@owf/identity-common': 0.9.0
+      '@owf/jose': 0.9.0
+      zod: 4.6.7
+
   '@openid4vc/oauth2@0.6.0':
     dependencies:
       '@openid4vc/utils': 0.6.0
@@ -2535,6 +2554,11 @@ snapshots:
     dependencies:
       '@openid4vc/oauth2': 0.6.0
       '@openid4vc/utils': 0.6.0
+      zod: 4.6.7
+
+  '@openid4vc/utils@0.11.0':
+    dependencies:
+      '@owf/identity-common': 0.9.0
       zod: 4.6.7
 
   '@openid4vc/utils@0.6.0':
@@ -2561,6 +2585,15 @@ snapshots:
       zod-validation-error: 5.0.0(zod@4.6.7)
 
   '@owf/identity-common@0.4.2': {}
+
+  '@owf/identity-common@0.9.0':
+    dependencies:
+      zod: 4.6.7
+
+  '@owf/jose@0.9.0':
+    dependencies:
+      '@owf/identity-common': 0.9.0
+      zod: 4.6.7
 
   '@owf/mdoc@0.8.2':
     dependencies:
